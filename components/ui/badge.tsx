@@ -11,7 +11,7 @@ export function Badge({ children, variant, className }: BadgeProps) {
   const colorClass =
     STATUS_COLORS[variant ?? ''] ??
     TIER_COLORS[variant ?? ''] ??
-    'bg-[rgba(136,133,128,0.12)] text-[#888580] border-[rgba(136,133,128,0.25)]'
+    'bg-[rgba(136,133,128,0.12)] text-[#f0ede8] border-[rgba(136,133,128,0.25)]'
   return (
     <span
       className={cn(

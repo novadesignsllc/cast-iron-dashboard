@@ -17,7 +17,7 @@ export default function AmbassadorsPage() {
     <div className="p-8 space-y-6 max-w-[1400px]">
       <div>
         <h1 className="text-2xl font-medium text-[#f0ede8] mb-1">Brand Ambassador Leaderboard</h1>
-        <p className="text-[#888580] text-sm font-mono">Sortable performance metrics for all brand ambassadors</p>
+        <p className="text-[#f0ede8] text-sm font-mono">Sortable performance metrics for all brand ambassadors</p>
       </div>
       <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
         <AmbassadorData />

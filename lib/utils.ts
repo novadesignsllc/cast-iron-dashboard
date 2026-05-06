@@ -72,14 +72,14 @@ export const CHANNEL_LABELS: Record<string, string> = {
 export const TIER_COLORS: Record<string, string> = {
   Founder: 'bg-[rgba(245,166,35,0.15)] text-[#f5a623] border-[rgba(245,166,35,0.3)]',
   Growth: 'bg-[rgba(74,222,154,0.12)] text-[#4ade9a] border-[rgba(74,222,154,0.25)]',
-  Standard: 'bg-[rgba(136,133,128,0.15)] text-[#888580] border-[rgba(136,133,128,0.3)]',
+  Standard: 'bg-[rgba(136,133,128,0.15)] text-[#f0ede8] border-[rgba(136,133,128,0.3)]',
 }
 
 export const STATUS_COLORS: Record<string, string> = {
   active: 'bg-[rgba(74,222,154,0.12)] text-[#4ade9a] border-[rgba(74,222,154,0.25)]',
   paused: 'bg-[rgba(245,166,35,0.12)] text-[#f5a623] border-[rgba(245,166,35,0.25)]',
   churned: 'bg-[rgba(240,90,90,0.12)] text-[#f05a5a] border-[rgba(240,90,90,0.25)]',
-  none: 'bg-[rgba(136,133,128,0.12)] text-[#888580] border-[rgba(136,133,128,0.25)]',
+  none: 'bg-[rgba(136,133,128,0.12)] text-[#f0ede8] border-[rgba(136,133,128,0.25)]',
   cancelled: 'bg-[rgba(240,90,90,0.12)] text-[#f05a5a] border-[rgba(240,90,90,0.25)]',
   success: 'bg-[rgba(74,222,154,0.12)] text-[#4ade9a] border-[rgba(74,222,154,0.25)]',
   failed: 'bg-[rgba(240,90,90,0.12)] text-[#f05a5a] border-[rgba(240,90,90,0.25)]',

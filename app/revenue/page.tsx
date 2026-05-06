@@ -44,13 +44,13 @@ async function CohortSection() {
           <thead>
             <tr className="border-b border-[#232323] bg-[#111111]">
               {['Cohort', 'Customers', 'Avg LTV', 'Total Revenue', '% Subscribed'].map(h => (
-                <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">{h}</th>
+                <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#f0ede8] uppercase tracking-widest">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-[#232323]">
             {rows.length === 0 && (
-              <tr><td colSpan={5} className="px-5 py-8 text-center text-[#888580]">No cohort data</td></tr>
+              <tr><td colSpan={5} className="px-5 py-8 text-center text-[#f0ede8]">No cohort data</td></tr>
             )}
             {rows.map(row => (
               <tr key={row.month} className="hover:bg-[#1e1e1e]">
@@ -87,7 +87,7 @@ async function TopOrdersSection() {
           <thead>
             <tr className="border-b border-[#232323] bg-[#111111]">
               {['Rank', 'Order #', 'Customer', 'Date', 'Total'].map(h => (
-                <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">{h}</th>
+                <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#f0ede8] uppercase tracking-widest">{h}</th>
               ))}
             </tr>
           </thead>
@@ -98,14 +98,14 @@ async function TopOrdersSection() {
                   <span className="w-6 h-6 rounded-full inline-flex items-center justify-center text-xs font-bold font-mono"
                     style={{
                       background: i === 0 ? 'rgba(74,222,154,0.2)' : 'rgba(136,133,128,0.12)',
-                      color: i === 0 ? '#4ade9a' : '#888580',
+                      color: i === 0 ? '#4ade9a' : '#f0ede8',
                     }}>
                     {i + 1}
                   </span>
                 </td>
-                <td className="px-5 py-3 font-mono text-xs text-[#888580]">{o.order_number}</td>
+                <td className="px-5 py-3 font-mono text-xs text-[#f0ede8]">{o.order_number}</td>
                 <td className="px-5 py-3 text-[#f0ede8]">{o.customer_name}</td>
-                <td className="px-5 py-3 text-[#888580] font-mono text-xs">{new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                <td className="px-5 py-3 text-[#f0ede8] font-mono text-xs">{new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                 <td className="px-5 py-3 font-bold font-mono text-[#4ade9a]">{formatCurrency(o.total)}</td>
               </tr>
             ))}
@@ -153,7 +153,7 @@ async function FunnelSection() {
           {steps.map((step, i) => (
             <div key={step.label}>
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-[#888580]">{step.label}</span>
+                <span className="text-[#f0ede8]">{step.label}</span>
                 <span className="font-semibold tabular-nums font-mono text-[#f0ede8]">{formatNumber(step.value)}</span>
               </div>
               <div className="h-2 bg-[#222222] rounded-full overflow-hidden">
@@ -163,7 +163,7 @@ async function FunnelSection() {
                 />
               </div>
               {i < steps.length - 1 && (
-                <p className="text-xs text-[#888580] mt-1">
+                <p className="text-xs text-[#f0ede8] mt-1">
                   {steps[i + 1].value > 0 ? `${formatPercent((steps[i + 1].value / Math.max(step.value, 1)) * 100)} conversion` : ''}
                 </p>
               )}
@@ -180,7 +180,7 @@ export default function RevenuePage() {
     <div className="p-8 space-y-6 max-w-[1400px]">
       <div>
         <h1 className="text-2xl font-medium text-[#f0ede8] mb-1">Revenue & Attribution</h1>
-        <p className="text-[#888580] text-sm">Channel performance, LTV analysis, and referral funnel</p>
+        <p className="text-[#f0ede8] text-sm">Channel performance, LTV analysis, and referral funnel</p>
       </div>
 
       <Suspense fallback={<Skeleton className="h-72 rounded-xl" />}>

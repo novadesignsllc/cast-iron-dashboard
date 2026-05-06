@@ -79,7 +79,7 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
       {/* Filters */}
       <div className="px-6 py-4 border-b border-[#232323] space-y-3">
         <div className="relative">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888580]" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#f0ede8]" />
           <input
             type="text"
             placeholder="Search by name or email..."
@@ -90,19 +90,19 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
         </div>
         <div className="flex flex-wrap gap-2 items-center">
           <div className="flex items-center gap-1">
-            <span className="text-xs text-[#888580]">Source:</span>
+            <span className="text-xs text-[#f0ede8]">Source:</span>
             <select value={sourceFilter} onChange={e => setSourceFilter(e.target.value)} className="text-xs rounded px-2 py-1">
               {sources.map(s => <option key={s} value={s}>{s === 'All' ? 'All Sources' : (CHANNEL_LABELS[s] ?? s)}</option>)}
             </select>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-xs text-[#888580]">Subscription:</span>
+            <span className="text-xs text-[#f0ede8]">Subscription:</span>
             <select value={subFilter} onChange={e => setSubFilter(e.target.value)} className="text-xs rounded px-2 py-1">
               {['All', 'active', 'paused', 'cancelled', 'none'].map(s => <option key={s}>{s}</option>)}
             </select>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-xs text-[#888580]">Churn Risk:</span>
+            <span className="text-xs text-[#f0ede8]">Churn Risk:</span>
             <select value={churnFilter} onChange={e => setChurnFilter(e.target.value)} className="text-xs rounded px-2 py-1">
               {['All', 'low', 'medium', 'high'].map(s => <option key={s}>{s}</option>)}
             </select>
@@ -112,13 +112,13 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
             className="text-xs px-3 py-1 rounded border transition-colors"
             style={{
               background: isBAFilter ? 'rgba(74,222,154,0.15)' : 'transparent',
-              color: isBAFilter ? '#4ade9a' : '#888580',
+              color: isBAFilter ? '#4ade9a' : '#f0ede8',
               borderColor: isBAFilter ? 'rgba(74,222,154,0.4)' : '#2e2e2e',
             }}
           >
             ⭐ BAs Only
           </button>
-          <span className="ml-auto text-xs text-[#888580]">{filtered.length} customers</span>
+          <span className="ml-auto text-xs text-[#f0ede8]">{filtered.length} customers</span>
         </div>
       </div>
 
@@ -129,16 +129,16 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
             <tr className="border-b border-[#232323] bg-[#111111]">
               {COLS.map(col => (
                 <th key={col.key} onClick={() => toggleSort(col.key)}
-                  className="px-4 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest cursor-pointer select-none hover:text-[#f0ede8] whitespace-nowrap">
+                  className="px-4 py-3 text-left text-xs font-medium text-[#f0ede8] uppercase tracking-widest cursor-pointer select-none hover:text-[#f0ede8] whitespace-nowrap">
                   <span className="flex items-center gap-1">{col.label}<SortIcon col={col.key} sort={sort} /></span>
                 </th>
               ))}
-              <th className="px-4 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">Email/SMS</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-[#f0ede8] uppercase tracking-widest">Email/SMS</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#232323]">
             {filtered.length === 0 && (
-              <tr><td colSpan={9} className="px-6 py-12 text-center text-[#888580]">No customers match your filters</td></tr>
+              <tr><td colSpan={9} className="px-6 py-12 text-center text-[#f0ede8]">No customers match your filters</td></tr>
             )}
             {filtered.map(c => (
               <tr key={c.id} className="hover:bg-[#1e1e1e] transition-colors cursor-pointer">
@@ -147,21 +147,21 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
                     {c.first_name} {c.last_name}
                     {c.is_ba && <span className="ml-1 text-[10px] text-[#4ade9a]">⭐</span>}
                   </Link>
-                  <p className="text-xs text-[#888580] truncate max-w-[160px] font-mono">{c.email}</p>
+                  <p className="text-xs text-[#f0ede8] truncate max-w-[160px] font-mono">{c.email}</p>
                 </td>
-                <td className="px-4 py-3 text-xs text-[#888580] whitespace-nowrap">
+                <td className="px-4 py-3 text-xs text-[#f0ede8] whitespace-nowrap">
                   {CHANNEL_ICONS[c.origin_source ?? 'direct'] ?? '🔗'} {CHANNEL_LABELS[c.origin_source ?? 'direct'] ?? c.origin_source ?? 'Direct'}
                 </td>
                 <td className="px-4 py-3 tabular-nums text-right font-mono text-[#f0ede8]">{c.total_orders}</td>
                 <td className="px-4 py-3 font-semibold tabular-nums text-right font-mono text-[#4ade9a]">{formatCurrency(c.net_ltv)}</td>
                 <td className="px-4 py-3">
-                  {c.subscription_status ? <Badge variant={c.subscription_status}>{c.subscription_status}</Badge> : <span className="text-[#888580] text-xs">—</span>}
+                  {c.subscription_status ? <Badge variant={c.subscription_status}>{c.subscription_status}</Badge> : <span className="text-[#f0ede8] text-xs">—</span>}
                 </td>
                 <td className="px-4 py-3">
-                  {c.klaviyo_churn_risk ? <Badge variant={c.klaviyo_churn_risk}>{c.klaviyo_churn_risk}</Badge> : <span className="text-[#888580] text-xs">—</span>}
+                  {c.klaviyo_churn_risk ? <Badge variant={c.klaviyo_churn_risk}>{c.klaviyo_churn_risk}</Badge> : <span className="text-[#f0ede8] text-xs">—</span>}
                 </td>
-                <td className="px-4 py-3 tabular-nums text-right font-mono text-[#888580]">{c.klaviyo_predicted_clv ? formatCurrency(c.klaviyo_predicted_clv) : '—'}</td>
-                <td className="px-4 py-3 text-[#888580] text-xs font-mono">{formatDate(c.first_purchase_date)}</td>
+                <td className="px-4 py-3 tabular-nums text-right font-mono text-[#f0ede8]">{c.klaviyo_predicted_clv ? formatCurrency(c.klaviyo_predicted_clv) : '—'}</td>
+                <td className="px-4 py-3 text-[#f0ede8] text-xs font-mono">{formatDate(c.first_purchase_date)}</td>
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
                     {c.klaviyo_email_consent ? <CheckCircle2 size={14} className="text-[#4ade9a]" /> : <XCircle size={14} className="text-[#f05a5a]" />}

@@ -41,7 +41,7 @@ export default function CustomersPage() {
     <div className="p-8 space-y-6 max-w-[1400px]">
       <div>
         <h1 className="text-2xl font-medium text-[#f0ede8] mb-1">Customer Explorer</h1>
-        <p className="text-[#888580] text-sm font-mono">Search, filter, and explore all customers</p>
+        <p className="text-[#f0ede8] text-sm font-mono">Search, filter, and explore all customers</p>
       </div>
       <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
         <CustomerData />

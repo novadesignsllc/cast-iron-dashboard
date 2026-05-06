@@ -36,7 +36,7 @@ export default async function BADetailPage({ params }: Props) {
 
   return (
     <div className="p-8 space-y-6 max-w-[1400px]">
-      <Link href="/ambassadors" className="inline-flex items-center gap-2 text-sm text-[#888580] hover:text-[#4ade9a] transition-colors">
+      <Link href="/ambassadors" className="inline-flex items-center gap-2 text-sm text-[#f0ede8] hover:text-[#4ade9a] transition-colors">
         <ArrowLeft size={16} />
         Back to Leaderboard
       </Link>
@@ -59,7 +59,7 @@ export default async function BADetailPage({ params }: Props) {
                 <Badge variant={ba.ba_tier}>{ba.ba_tier ?? 'Standard'}</Badge>
                 <Badge variant={ba.ba_status}>{ba.ba_status ?? 'unknown'}</Badge>
               </div>
-              <div className="flex flex-wrap gap-4 text-sm text-[#888580]">
+              <div className="flex flex-wrap gap-4 text-sm text-[#f0ede8]">
                 {ba.email && <span className="flex items-center gap-1.5"><Mail size={14} />{ba.email}</span>}
                 {ba.phone && <span className="flex items-center gap-1.5"><Phone size={14} />{ba.phone}</span>}
                 <span className="flex items-center gap-1.5">
@@ -69,11 +69,11 @@ export default async function BADetailPage({ params }: Props) {
               </div>
             </div>
             <div className="text-right">
-              <p className="text-xs text-[#888580] uppercase tracking-widest mb-1">True Network CAC</p>
+              <p className="text-xs text-[#f0ede8] uppercase tracking-widest mb-1">True Network CAC</p>
               <p className="text-3xl font-semibold font-mono text-[#4ade9a]">
                 {formatCurrency(netStats.true_network_cac)}
               </p>
-              <p className="text-xs text-[#888580]">per network customer</p>
+              <p className="text-xs text-[#f0ede8]">per network customer</p>
             </div>
           </div>
         </CardContent>
@@ -110,21 +110,21 @@ export default async function BADetailPage({ params }: Props) {
             <thead>
               <tr className="border-b border-[#232323] bg-[#111111]">
                 {['Date', 'Customer', 'Order #', 'Amount', 'Attribution', 'Status'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#f0ede8] uppercase tracking-widest">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-[#232323]">
               {commissions.length === 0 && (
-                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#888580]">No commission history</td></tr>
+                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#f0ede8]">No commission history</td></tr>
               )}
               {commissions.map(c => (
                 <tr key={c.id} className="hover:bg-[#1e1e1e] transition-colors">
-                  <td className="px-5 py-3 text-[#888580] font-mono text-xs">{formatDate(c.earned_at)}</td>
+                  <td className="px-5 py-3 text-[#f0ede8] font-mono text-xs">{formatDate(c.earned_at)}</td>
                   <td className="px-5 py-3 text-[#f0ede8]">{c.referred_customer_name}</td>
-                  <td className="px-5 py-3 font-mono text-xs text-[#888580]">{c.order_number ?? '—'}</td>
+                  <td className="px-5 py-3 font-mono text-xs text-[#f0ede8]">{c.order_number ?? '—'}</td>
                   <td className="px-5 py-3 font-semibold font-mono text-[#f0ede8]">{formatCurrency(c.commission_amount)}</td>
-                  <td className="px-5 py-3 text-xs text-[#888580]">{c.attribution_method}</td>
+                  <td className="px-5 py-3 text-xs text-[#f0ede8]">{c.attribution_method}</td>
                   <td className="px-5 py-3"><Badge variant={c.payout_status}>{c.payout_status}</Badge></td>
                 </tr>
               ))}
@@ -141,13 +141,13 @@ export default async function BADetailPage({ params }: Props) {
             <thead>
               <tr className="border-b border-[#232323] bg-[#111111]">
                 {['Name', 'First Order', 'Orders', 'LTV', 'Subscription', 'Their Referrals'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#f0ede8] uppercase tracking-widest">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-[#232323]">
               {directReferrals.length === 0 && (
-                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#888580]">No direct referrals yet</td></tr>
+                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#f0ede8]">No direct referrals yet</td></tr>
               )}
               {directReferrals.map(c => (
                 <tr key={c.id} className="hover:bg-[#1e1e1e] transition-colors">
@@ -156,13 +156,13 @@ export default async function BADetailPage({ params }: Props) {
                       {c.first_name} {c.last_name}
                     </Link>
                   </td>
-                  <td className="px-5 py-3 text-[#888580] font-mono text-xs">{formatDate(c.first_purchase_date)}</td>
+                  <td className="px-5 py-3 text-[#f0ede8] font-mono text-xs">{formatDate(c.first_purchase_date)}</td>
                   <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{c.total_orders}</td>
                   <td className="px-5 py-3 font-semibold tabular-nums font-mono text-[#4ade9a]">{formatCurrency(c.net_ltv)}</td>
                   <td className="px-5 py-3">
                     {c.subscription_status
                       ? <Badge variant={c.subscription_status}>{c.subscription_status}</Badge>
-                      : <span className="text-[#888580] text-xs">—</span>}
+                      : <span className="text-[#f0ede8] text-xs">—</span>}
                   </td>
                   <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{c.ba_referral_count ?? 0}</td>
                 </tr>

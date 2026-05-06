@@ -13,7 +13,7 @@ export function StatCard({ label, value, subtext, accent, icon }: StatCardProps)
     <Card className="p-5">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-xs text-[#888580] uppercase tracking-widest mb-2">{label}</p>
+          <p className="text-xs text-[#f0ede8] uppercase tracking-widest mb-2">{label}</p>
           <p
             className="text-2xl font-semibold font-mono"
             style={{ color: accent ? '#4ade9a' : '#f0ede8' }}
@@ -21,7 +21,7 @@ export function StatCard({ label, value, subtext, accent, icon }: StatCardProps)
             {value}
           </p>
           {subtext && (
-            <p className="text-xs text-[#888580] mt-1">{subtext}</p>
+            <p className="text-xs text-[#f0ede8] mt-1">{subtext}</p>
           )}
         </div>
         {icon && (

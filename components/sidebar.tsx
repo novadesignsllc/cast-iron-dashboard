@@ -28,7 +28,7 @@ export function Sidebar() {
           </div>
           <div>
             <p className="text-[#f0ede8] font-medium text-sm leading-tight">Cast Iron</p>
-            <p className="text-[#888580] text-xs">Nutrition</p>
+            <p className="text-[#f0ede8] text-xs">Nutrition</p>
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@ export function Sidebar() {
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150',
                 isActive
                   ? 'bg-[rgba(74,222,154,0.12)] text-[#4ade9a] font-medium'
-                  : 'text-[#888580] hover:text-[#f0ede8] hover:bg-[#1e1e1e]'
+                  : 'text-[#f0ede8] hover:text-[#f0ede8] hover:bg-[#1e1e1e]'
               )}
             >
               <Icon size={16} />
@@ -57,8 +57,8 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="px-4 py-4 border-t border-[#232323]">
-        <p className="text-[#444444] text-xs">Internal Dashboard</p>
-        <p className="text-[#333] text-xs">Read-only · v1.0</p>
+        <p className="text-[#f0ede8] text-xs">Internal Dashboard</p>
+        <p className="text-[#f0ede8] text-xs">Read-only · v1.0</p>
       </div>
     </aside>
   )

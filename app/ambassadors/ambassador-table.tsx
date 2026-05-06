@@ -76,7 +76,7 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
     <Card>
       {/* Filters */}
       <div className="px-6 py-4 border-b border-[#232323] flex items-center gap-2">
-        <span className="text-xs text-[#888580] mr-2">Tier:</span>
+        <span className="text-xs text-[#f0ede8] mr-2">Tier:</span>
         {tiers.map(t => (
           <button
             key={t}
@@ -84,14 +84,14 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
             className="px-3 py-1 rounded-full text-xs border transition-colors"
             style={{
               background: tierFilter === t ? 'rgba(74,222,154,0.15)' : 'transparent',
-              color: tierFilter === t ? '#4ade9a' : '#888580',
+              color: tierFilter === t ? '#4ade9a' : '#f0ede8',
               borderColor: tierFilter === t ? 'rgba(74,222,154,0.4)' : '#2e2e2e',
             }}
           >
             {t}
           </button>
         ))}
-        <span className="ml-auto text-xs text-[#888580]">{sorted.length} ambassadors</span>
+        <span className="ml-auto text-xs text-[#f0ede8]">{sorted.length} ambassadors</span>
       </div>
 
       {/* Table */}
@@ -103,7 +103,7 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
                 <th
                   key={col.key}
                   onClick={() => toggleSort(col.key)}
-                  className="px-4 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest cursor-pointer select-none hover:text-[#f0ede8] whitespace-nowrap"
+                  className="px-4 py-3 text-left text-xs font-medium text-[#f0ede8] uppercase tracking-widest cursor-pointer select-none hover:text-[#f0ede8] whitespace-nowrap"
                 >
                   <span className="flex items-center gap-1">
                     {col.label}
@@ -116,7 +116,7 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
           <tbody className="divide-y divide-[#232323]">
             {sorted.length === 0 && (
               <tr>
-                <td colSpan={COLS.length} className="px-6 py-12 text-center text-[#888580]">
+                <td colSpan={COLS.length} className="px-6 py-12 text-center text-[#f0ede8]">
                   No ambassadors found
                 </td>
               </tr>
@@ -132,9 +132,9 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
                 <td className="px-4 py-3"><Badge variant={ba.ba_status}>{ba.ba_status ?? 'unknown'}</Badge></td>
                 <td className="px-4 py-3 text-right tabular-nums font-mono text-[#f0ede8]">{formatNumber(ba.ba_referral_count ?? 0)}</td>
                 <td className="px-4 py-3 text-right tabular-nums font-mono text-[#f0ede8]">{formatNumber(ba.network_size)}</td>
-                <td className="px-4 py-3 text-right tabular-nums font-mono text-[#888580]">{formatCurrency(ba.direct_revenue)}</td>
+                <td className="px-4 py-3 text-right tabular-nums font-mono text-[#f0ede8]">{formatCurrency(ba.direct_revenue)}</td>
                 <td className="px-4 py-3 text-right tabular-nums font-mono font-semibold text-[#4ade9a]">{formatCurrency(ba.network_revenue)}</td>
-                <td className="px-4 py-3 text-right tabular-nums font-mono text-[#888580]">{formatCurrency(ba.ba_total_commission ?? 0)}</td>
+                <td className="px-4 py-3 text-right tabular-nums font-mono text-[#f0ede8]">{formatCurrency(ba.ba_total_commission ?? 0)}</td>
                 <td className="px-4 py-3 text-right tabular-nums">
                   <span className="text-xs font-mono px-2 py-0.5 bg-[#222222] rounded border border-[#2e2e2e] text-[#f0ede8]">
                     {formatCurrency(ba.true_network_cac)}
@@ -144,7 +144,7 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
                   style={{ color: ba.network_roi >= 3 ? '#4ade9a' : ba.network_roi >= 1 ? '#f5a623' : '#f05a5a' }}>
                   {formatRatio(ba.network_roi)}
                 </td>
-                <td className="px-4 py-3 text-right tabular-nums font-mono text-[#888580]">{formatCurrency(ba.avg_referral_ltv)}</td>
+                <td className="px-4 py-3 text-right tabular-nums font-mono text-[#f0ede8]">{formatCurrency(ba.avg_referral_ltv)}</td>
               </tr>
             ))}
           </tbody>

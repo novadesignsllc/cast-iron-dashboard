@@ -5,7 +5,7 @@ import {
 import type { ChannelBreakdown } from '@/lib/types'
 import { CHANNEL_LABELS, formatCurrency } from '@/lib/utils'
 
-const COLORS = ['#4ade9a', '#f5a623', '#f05a5a', '#60a5fa', '#a78bfa', '#fb923c', '#888580']
+const COLORS = ['#4ade9a', '#f5a623', '#f05a5a', '#60a5fa', '#a78bfa', '#fb923c', '#f0ede8']
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ChannelTooltip({ active, payload }: any) {
@@ -14,8 +14,8 @@ function ChannelTooltip({ active, payload }: any) {
   return (
     <div className="bg-[#181818] border border-[#2e2e2e] rounded-lg p-3">
       <p className="text-xs font-semibold text-[#f0ede8] mb-1">{p.name}</p>
-      <p className="text-xs text-[#888580] font-mono">{formatCurrency(p.value ?? 0)}</p>
-      <p className="text-xs text-[#888580]">{p.payload?.customers ?? 0} customers</p>
+      <p className="text-xs text-[#f0ede8] font-mono">{formatCurrency(p.value ?? 0)}</p>
+      <p className="text-xs text-[#f0ede8]">{p.payload?.customers ?? 0} customers</p>
     </div>
   )
 }
@@ -52,7 +52,7 @@ export function ChannelPieChart({ data }: { data: ChannelBreakdown[] }) {
           iconType="circle"
           iconSize={7}
           formatter={(value) => (
-            <span style={{ fontSize: 11, color: '#888580', fontFamily: 'DM Sans, sans-serif' }}>{value}</span>
+            <span style={{ fontSize: 11, color: '#f0ede8', fontFamily: 'DM Sans, sans-serif' }}>{value}</span>
           )}
         />
       </PieChart>

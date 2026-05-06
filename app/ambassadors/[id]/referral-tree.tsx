@@ -31,7 +31,7 @@ function TreeNode({ node, children, allNodes, isLast, depth }: TreeNodeProps) {
             className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-mono flex-shrink-0"
             style={{
               background: depth === 0 ? 'rgba(74,222,154,0.2)' : depth === 1 ? 'rgba(245,166,35,0.15)' : 'rgba(136,133,128,0.15)',
-              color: depth === 0 ? '#4ade9a' : depth === 1 ? '#f5a623' : '#888580',
+              color: depth === 0 ? '#4ade9a' : depth === 1 ? '#f5a623' : '#f0ede8',
             }}
           >
             {node.first_name[0]}{node.last_name[0]}
@@ -60,7 +60,7 @@ function TreeNode({ node, children, allNodes, isLast, depth }: TreeNodeProps) {
                 </span>
               )}
               {depth > 0 && (
-                <span className="text-xs text-[#888580] font-mono">
+                <span className="text-xs text-[#f0ede8] font-mono">
                   {depth === 1 ? 'direct referral' : `depth ${depth}`}
                 </span>
               )}
@@ -95,7 +95,7 @@ function TreeNode({ node, children, allNodes, isLast, depth }: TreeNodeProps) {
 export function ReferralTree({ baId, nodes }: { baId: string; nodes: ReferralTreeNode[] }) {
   if (nodes.length === 0) {
     return (
-      <div className="py-8 text-center text-[#888580] text-sm font-mono">
+      <div className="py-8 text-center text-[#f0ede8] text-sm font-mono">
         No referrals in network yet
       </div>
     )
@@ -106,12 +106,12 @@ export function ReferralTree({ baId, nodes }: { baId: string; nodes: ReferralTre
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4 text-xs text-[#888580] font-mono">
+      <div className="flex items-center justify-between mb-4 text-xs text-[#f0ede8] font-mono">
         <span>{nodes.length} people in network</span>
         <span className="font-semibold text-[#f0ede8]">Total network LTV: {formatCurrency(totalLTV)}</span>
       </div>
-      <div className="font-mono text-xs text-[#888580] mb-3 pb-3 border-b border-[#232323]">
-        Legend: <span className="text-[#4ade9a]">● BA</span> · <span className="text-[#f5a623]">● Direct referral</span> · <span className="text-[#888580]">● Downstream</span>
+      <div className="font-mono text-xs text-[#f0ede8] mb-3 pb-3 border-b border-[#232323]">
+        Legend: <span className="text-[#4ade9a]">● BA</span> · <span className="text-[#f5a623]">● Direct referral</span> · <span className="text-[#f0ede8]">● Downstream</span>
       </div>
       <div className="space-y-0.5">
         {directReferrals.map((child, i) => {
