@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { StatCard } from '@/components/stat-card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { formatDate, formatNumber, timeAgo } from '@/lib/utils'
+import { formatNumber, timeAgo } from '@/lib/utils'
 import { Activity } from 'lucide-react'
 import type { SyncLog } from '@/lib/types'
 
@@ -35,10 +35,9 @@ async function SyncHealthPage() {
     <div className="p-8 space-y-6 max-w-[1400px]">
       <div>
         <h1 className="text-2xl font-medium text-[#f0ede8] mb-1">Sync Health</h1>
-        <p className="text-[#888580] text-sm font-mono">Data pipeline status and sync history</p>
+        <p className="text-[#888580] text-sm">Data pipeline status and sync history</p>
       </div>
 
-      {/* Summary stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Last Successful Sync" value={lastSuccess} icon={<Activity size={18} />} />
         <StatCard label="Active Sources" value={formatNumber(sourceLogs.length)} />
@@ -46,7 +45,6 @@ async function SyncHealthPage() {
         <StatCard label="Failed Sources" value={formatNumber(failedCount)} accent={failedCount > 0} />
       </div>
 
-      {/* Per-source status */}
       <Card>
         <CardHeader><CardTitle>Status by Source</CardTitle></CardHeader>
         <div className="overflow-x-auto">
@@ -54,19 +52,19 @@ async function SyncHealthPage() {
             <thead>
               <tr className="border-b border-[#232323] bg-[#111111]">
                 {['Source', 'Type', 'Status', 'Last Sync', 'Processed', 'Created', 'Updated', 'Error'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-[#232323]">
               {sourceLogs.length === 0 && (
-                <tr><td colSpan={8} className="px-5 py-8 text-center text-[#888580] font-mono">No sync data</td></tr>
+                <tr><td colSpan={8} className="px-5 py-8 text-center text-[#888580]">No sync data</td></tr>
               )}
               {sourceLogs.map(log => (
                 <tr key={log.id}
                   className={`hover:bg-[#1e1e1e] transition-colors ${log.status === 'failed' ? 'bg-[rgba(240,90,90,0.04)]' : ''}`}>
                   <td className="px-5 py-3 font-medium text-[#f0ede8]">{log.source}</td>
-                  <td className="px-5 py-3 text-[#888580] text-xs font-mono">{log.sync_type}</td>
+                  <td className="px-5 py-3 text-[#888580] text-xs">{log.sync_type}</td>
                   <td className="px-5 py-3"><Badge variant={log.status}>{log.status}</Badge></td>
                   <td className="px-5 py-3 text-[#888580] font-mono text-xs">{timeAgo(log.completed_at ?? log.started_at)}</td>
                   <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{log.records_processed != null ? formatNumber(log.records_processed) : '—'}</td>
@@ -82,7 +80,6 @@ async function SyncHealthPage() {
         </div>
       </Card>
 
-      {/* Full sync log */}
       <Card>
         <CardHeader><CardTitle>Recent Sync Log (Last 20)</CardTitle></CardHeader>
         <div className="overflow-x-auto">
@@ -90,29 +87,25 @@ async function SyncHealthPage() {
             <thead>
               <tr className="border-b border-[#232323] bg-[#111111]">
                 {['Started', 'Completed', 'Source', 'Type', 'Status', 'Processed', 'Error'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-[#232323]">
               {allLogs.length === 0 && (
-                <tr><td colSpan={7} className="px-5 py-8 text-center text-[#888580] font-mono">No sync history</td></tr>
+                <tr><td colSpan={7} className="px-5 py-8 text-center text-[#888580]">No sync history</td></tr>
               )}
               {allLogs.map(log => (
                 <tr key={log.id}
                   className={`hover:bg-[#1e1e1e] transition-colors ${log.status === 'failed' ? 'bg-[rgba(240,90,90,0.04)]' : ''}`}>
                   <td className="px-5 py-3 text-[#888580] text-xs whitespace-nowrap font-mono">
-                    {new Date(log.started_at).toLocaleString('en-US', {
-                      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                    })}
+                    {new Date(log.started_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </td>
                   <td className="px-5 py-3 text-[#888580] text-xs whitespace-nowrap font-mono">
-                    {log.completed_at ? new Date(log.completed_at).toLocaleString('en-US', {
-                      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                    }) : '—'}
+                    {log.completed_at ? new Date(log.completed_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
                   </td>
                   <td className="px-5 py-3 text-[#f0ede8]">{log.source}</td>
-                  <td className="px-5 py-3 text-xs text-[#888580] font-mono">{log.sync_type}</td>
+                  <td className="px-5 py-3 text-xs text-[#888580]">{log.sync_type}</td>
                   <td className="px-5 py-3"><Badge variant={log.status}>{log.status}</Badge></td>
                   <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{log.records_processed != null ? formatNumber(log.records_processed) : '—'}</td>
                   <td className="px-5 py-3 text-xs text-[#f05a5a] max-w-[200px] truncate font-mono" title={log.error_message ?? undefined}>

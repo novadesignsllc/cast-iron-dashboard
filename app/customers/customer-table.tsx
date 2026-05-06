@@ -85,34 +85,31 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
             placeholder="Search by name or email..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-sm rounded-lg font-mono"
+            className="w-full pl-9 pr-4 py-2 text-sm rounded-lg"
           />
         </div>
         <div className="flex flex-wrap gap-2 items-center">
           <div className="flex items-center gap-1">
-            <span className="text-xs text-[#888580] font-mono">Source:</span>
-            <select value={sourceFilter} onChange={e => setSourceFilter(e.target.value)}
-              className="text-xs rounded px-2 py-1 font-mono">
+            <span className="text-xs text-[#888580]">Source:</span>
+            <select value={sourceFilter} onChange={e => setSourceFilter(e.target.value)} className="text-xs rounded px-2 py-1">
               {sources.map(s => <option key={s} value={s}>{s === 'All' ? 'All Sources' : (CHANNEL_LABELS[s] ?? s)}</option>)}
             </select>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-xs text-[#888580] font-mono">Subscription:</span>
-            <select value={subFilter} onChange={e => setSubFilter(e.target.value)}
-              className="text-xs rounded px-2 py-1 font-mono">
+            <span className="text-xs text-[#888580]">Subscription:</span>
+            <select value={subFilter} onChange={e => setSubFilter(e.target.value)} className="text-xs rounded px-2 py-1">
               {['All', 'active', 'paused', 'cancelled', 'none'].map(s => <option key={s}>{s}</option>)}
             </select>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-xs text-[#888580] font-mono">Churn Risk:</span>
-            <select value={churnFilter} onChange={e => setChurnFilter(e.target.value)}
-              className="text-xs rounded px-2 py-1 font-mono">
+            <span className="text-xs text-[#888580]">Churn Risk:</span>
+            <select value={churnFilter} onChange={e => setChurnFilter(e.target.value)} className="text-xs rounded px-2 py-1">
               {['All', 'low', 'medium', 'high'].map(s => <option key={s}>{s}</option>)}
             </select>
           </div>
           <button
             onClick={() => setIsBAFilter(v => !v)}
-            className="text-xs px-3 py-1 rounded border transition-colors font-mono"
+            className="text-xs px-3 py-1 rounded border transition-colors"
             style={{
               background: isBAFilter ? 'rgba(74,222,154,0.15)' : 'transparent',
               color: isBAFilter ? '#4ade9a' : '#888580',
@@ -121,7 +118,7 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
           >
             ⭐ BAs Only
           </button>
-          <span className="ml-auto text-xs text-[#888580] font-mono">{filtered.length} customers</span>
+          <span className="ml-auto text-xs text-[#888580]">{filtered.length} customers</span>
         </div>
       </div>
 
@@ -132,16 +129,16 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
             <tr className="border-b border-[#232323] bg-[#111111]">
               {COLS.map(col => (
                 <th key={col.key} onClick={() => toggleSort(col.key)}
-                  className="px-4 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest cursor-pointer select-none hover:text-[#f0ede8] whitespace-nowrap font-mono">
+                  className="px-4 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest cursor-pointer select-none hover:text-[#f0ede8] whitespace-nowrap">
                   <span className="flex items-center gap-1">{col.label}<SortIcon col={col.key} sort={sort} /></span>
                 </th>
               ))}
-              <th className="px-4 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">Email/SMS</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">Email/SMS</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#232323]">
             {filtered.length === 0 && (
-              <tr><td colSpan={9} className="px-6 py-12 text-center text-[#888580] font-mono">No customers match your filters</td></tr>
+              <tr><td colSpan={9} className="px-6 py-12 text-center text-[#888580]">No customers match your filters</td></tr>
             )}
             {filtered.map(c => (
               <tr key={c.id} className="hover:bg-[#1e1e1e] transition-colors cursor-pointer">
@@ -152,7 +149,7 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
                   </Link>
                   <p className="text-xs text-[#888580] truncate max-w-[160px] font-mono">{c.email}</p>
                 </td>
-                <td className="px-4 py-3 text-xs text-[#888580] whitespace-nowrap font-mono">
+                <td className="px-4 py-3 text-xs text-[#888580] whitespace-nowrap">
                   {CHANNEL_ICONS[c.origin_source ?? 'direct'] ?? '🔗'} {CHANNEL_LABELS[c.origin_source ?? 'direct'] ?? c.origin_source ?? 'Direct'}
                 </td>
                 <td className="px-4 py-3 tabular-nums text-right font-mono text-[#f0ede8]">{c.total_orders}</td>
@@ -167,12 +164,8 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
                 <td className="px-4 py-3 text-[#888580] text-xs font-mono">{formatDate(c.first_purchase_date)}</td>
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
-                    {c.klaviyo_email_consent
-                      ? <CheckCircle2 size={14} className="text-[#4ade9a]" />
-                      : <XCircle size={14} className="text-[#f05a5a]" />}
-                    {c.klaviyo_sms_consent
-                      ? <CheckCircle2 size={14} className="text-[#4ade9a]" />
-                      : <XCircle size={14} className="text-[#f05a5a]" />}
+                    {c.klaviyo_email_consent ? <CheckCircle2 size={14} className="text-[#4ade9a]" /> : <XCircle size={14} className="text-[#f05a5a]" />}
+                    {c.klaviyo_sms_consent ? <CheckCircle2 size={14} className="text-[#4ade9a]" /> : <XCircle size={14} className="text-[#f05a5a]" />}
                   </div>
                 </td>
               </tr>

@@ -27,10 +27,8 @@ export function Sidebar() {
             CI
           </div>
           <div>
-            <p className="text-[#f0ede8] font-medium text-sm leading-tight">
-              Cast Iron
-            </p>
-            <p className="text-[#888580] text-xs font-mono">Nutrition</p>
+            <p className="text-[#f0ede8] font-medium text-sm leading-tight">Cast Iron</p>
+            <p className="text-[#888580] text-xs">Nutrition</p>
           </div>
         </div>
       </div>
@@ -59,8 +57,8 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="px-4 py-4 border-t border-[#232323]">
-        <p className="text-[#444444] text-xs font-mono">Internal Dashboard</p>
-        <p className="text-[#333] text-xs font-mono">Read-only · v1.0</p>
+        <p className="text-[#444444] text-xs">Internal Dashboard</p>
+        <p className="text-[#333] text-xs">Read-only · v1.0</p>
       </div>
     </aside>
   )

@@ -13,9 +13,9 @@ function ChannelTooltip({ active, payload }: any) {
   const p = payload[0]
   return (
     <div className="bg-[#181818] border border-[#2e2e2e] rounded-lg p-3">
-      <p className="text-xs font-semibold text-[#f0ede8] mb-1 font-mono">{p.name}</p>
+      <p className="text-xs font-semibold text-[#f0ede8] mb-1">{p.name}</p>
       <p className="text-xs text-[#888580] font-mono">{formatCurrency(p.value ?? 0)}</p>
-      <p className="text-xs text-[#888580] font-mono">{p.payload?.customers ?? 0} customers</p>
+      <p className="text-xs text-[#888580]">{p.payload?.customers ?? 0} customers</p>
     </div>
   )
 }
@@ -52,7 +52,7 @@ export function ChannelPieChart({ data }: { data: ChannelBreakdown[] }) {
           iconType="circle"
           iconSize={7}
           formatter={(value) => (
-            <span style={{ fontSize: 11, color: '#888580', fontFamily: 'DM Mono, monospace' }}>{value}</span>
+            <span style={{ fontSize: 11, color: '#888580', fontFamily: 'DM Sans, sans-serif' }}>{value}</span>
           )}
         />
       </PieChart>

@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import {
   ChannelRevenueChart, LTVHistogram, CommissionVsRevenueChart, RefundRateChart
 } from '@/components/charts/revenue-charts'
-import { formatCurrency, formatPercent, formatNumber, CHANNEL_LABELS } from '@/lib/utils'
+import { formatCurrency, formatPercent, formatNumber } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -19,9 +19,7 @@ async function ChannelRevenueSection() {
   return (
     <Card>
       <CardHeader><CardTitle>Revenue & Avg LTV by Channel</CardTitle></CardHeader>
-      <CardContent className="pt-4">
-        <ChannelRevenueChart data={data} />
-      </CardContent>
+      <CardContent className="pt-4"><ChannelRevenueChart data={data} /></CardContent>
     </Card>
   )
 }
@@ -31,9 +29,7 @@ async function LTVSection() {
   return (
     <Card>
       <CardHeader><CardTitle>LTV Distribution</CardTitle></CardHeader>
-      <CardContent className="pt-4">
-        <LTVHistogram data={data} />
-      </CardContent>
+      <CardContent className="pt-4"><LTVHistogram data={data} /></CardContent>
     </Card>
   )
 }
@@ -48,17 +44,17 @@ async function CohortSection() {
           <thead>
             <tr className="border-b border-[#232323] bg-[#111111]">
               {['Cohort', 'Customers', 'Avg LTV', 'Total Revenue', '% Subscribed'].map(h => (
-                <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
+                <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-[#232323]">
             {rows.length === 0 && (
-              <tr><td colSpan={5} className="px-5 py-8 text-center text-[#888580] font-mono">No cohort data</td></tr>
+              <tr><td colSpan={5} className="px-5 py-8 text-center text-[#888580]">No cohort data</td></tr>
             )}
             {rows.map(row => (
               <tr key={row.month} className="hover:bg-[#1e1e1e]">
-                <td className="px-5 py-3 font-medium font-mono text-[#f0ede8]">
+                <td className="px-5 py-3 font-medium text-[#f0ede8]">
                   {new Date(row.month + '-01').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                 </td>
                 <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{formatNumber(row.customers)}</td>
@@ -91,7 +87,7 @@ async function TopOrdersSection() {
           <thead>
             <tr className="border-b border-[#232323] bg-[#111111]">
               {['Rank', 'Order #', 'Customer', 'Date', 'Total'].map(h => (
-                <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
+                <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">{h}</th>
               ))}
             </tr>
           </thead>
@@ -125,9 +121,7 @@ async function RefundRateSection() {
   return (
     <Card>
       <CardHeader><CardTitle>Refund Rate by Channel</CardTitle></CardHeader>
-      <CardContent className="pt-4">
-        <RefundRateChart data={data} />
-      </CardContent>
+      <CardContent className="pt-4"><RefundRateChart data={data} /></CardContent>
     </Card>
   )
 }
@@ -137,9 +131,7 @@ async function CommissionSection() {
   return (
     <Card>
       <CardHeader><CardTitle>Commission vs Revenue by Tier</CardTitle></CardHeader>
-      <CardContent className="pt-4">
-        <CommissionVsRevenueChart data={data} />
-      </CardContent>
+      <CardContent className="pt-4"><CommissionVsRevenueChart data={data} /></CardContent>
     </Card>
   )
 }
@@ -161,21 +153,17 @@ async function FunnelSection() {
           {steps.map((step, i) => (
             <div key={step.label}>
               <div className="flex justify-between text-sm mb-1">
-                <span className="text-[#888580] font-mono">{step.label}</span>
+                <span className="text-[#888580]">{step.label}</span>
                 <span className="font-semibold tabular-nums font-mono text-[#f0ede8]">{formatNumber(step.value)}</span>
               </div>
               <div className="h-2 bg-[#222222] rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all"
-                  style={{
-                    width: `${(step.value / max) * 100}%`,
-                    background: step.color,
-                    opacity: 0.8,
-                  }}
+                  style={{ width: `${(step.value / max) * 100}%`, background: step.color, opacity: 0.8 }}
                 />
               </div>
               {i < steps.length - 1 && (
-                <p className="text-xs text-[#888580] mt-1 font-mono">
+                <p className="text-xs text-[#888580] mt-1">
                   {steps[i + 1].value > 0 ? `${formatPercent((steps[i + 1].value / Math.max(step.value, 1)) * 100)} conversion` : ''}
                 </p>
               )}
@@ -192,7 +180,7 @@ export default function RevenuePage() {
     <div className="p-8 space-y-6 max-w-[1400px]">
       <div>
         <h1 className="text-2xl font-medium text-[#f0ede8] mb-1">Revenue & Attribution</h1>
-        <p className="text-[#888580] text-sm font-mono">Channel performance, LTV analysis, and referral funnel</p>
+        <p className="text-[#888580] text-sm">Channel performance, LTV analysis, and referral funnel</p>
       </div>
 
       <Suspense fallback={<Skeleton className="h-72 rounded-xl" />}>

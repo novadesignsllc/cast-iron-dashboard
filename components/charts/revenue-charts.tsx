@@ -7,13 +7,14 @@ import type { ChannelBreakdown } from '@/lib/types'
 import { formatCurrency, CHANNEL_LABELS } from '@/lib/utils'
 
 const COLORS = ['#4ade9a', '#f5a623', '#f05a5a', '#60a5fa', '#a78bfa', '#fb923c', '#888580']
+const SANS = 'DM Sans, sans-serif'
+const MONO = 'DM Mono, monospace'
 
 const TOOLTIP_STYLE = {
   backgroundColor: '#181818',
   border: '1px solid #2e2e2e',
   borderRadius: 8,
   fontSize: 12,
-  fontFamily: 'DM Mono, monospace',
   color: '#f0ede8',
 }
 
@@ -27,10 +28,10 @@ export function ChannelRevenueChart({ data }: { data: ChannelBreakdown[] }) {
     <ResponsiveContainer width="100%" height={260}>
       <BarChart data={formatted} barCategoryGap="30%">
         <CartesianGrid strokeDasharray="3 3" stroke="#232323" vertical={false} />
-        <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#888580', fontFamily: 'DM Mono, monospace' }} axisLine={false} tickLine={false} />
-        <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#888580', fontFamily: 'DM Mono, monospace' }} axisLine={false} tickLine={false}
+        <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#888580', fontFamily: SANS }} axisLine={false} tickLine={false} />
+        <YAxis yAxisId="left" tick={{ fontSize: 11, fill: '#888580', fontFamily: MONO }} axisLine={false} tickLine={false}
           tickFormatter={v => `$${((v as number) / 1000).toFixed(0)}k`} width={50} />
-        <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#888580', fontFamily: 'DM Mono, monospace' }} axisLine={false} tickLine={false}
+        <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: '#888580', fontFamily: MONO }} axisLine={false} tickLine={false}
           tickFormatter={v => `$${(v as number).toFixed(0)}`} width={55} />
         <Tooltip
           contentStyle={TOOLTIP_STYLE}
@@ -40,7 +41,7 @@ export function ChannelRevenueChart({ data }: { data: ChannelBreakdown[] }) {
           ]}
           cursor={{ fill: 'rgba(255,255,255,0.03)' }}
         />
-        <Legend formatter={(v) => <span style={{ fontSize: 11, color: '#888580', fontFamily: 'DM Mono, monospace' }}>{v === 'revenue' ? 'Total Revenue' : 'Avg LTV'}</span>} />
+        <Legend formatter={(v) => <span style={{ fontSize: 11, color: '#888580', fontFamily: SANS }}>{v === 'revenue' ? 'Total Revenue' : 'Avg LTV'}</span>} />
         <Bar yAxisId="left" dataKey="revenue" fill="#4ade9a" radius={[4, 4, 0, 0]} name="revenue" />
         <Bar yAxisId="right" dataKey="avg_ltv" fill="#f5a623" radius={[4, 4, 0, 0]} name="avg_ltv" />
       </BarChart>
@@ -53,8 +54,8 @@ export function LTVHistogram({ data }: { data: { bucket: string; count: number }
     <ResponsiveContainer width="100%" height={200}>
       <BarChart data={data} barSize={40}>
         <CartesianGrid strokeDasharray="3 3" stroke="#232323" vertical={false} />
-        <XAxis dataKey="bucket" tick={{ fontSize: 11, fill: '#888580', fontFamily: 'DM Mono, monospace' }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 11, fill: '#888580', fontFamily: 'DM Mono, monospace' }} axisLine={false} tickLine={false} width={35} />
+        <XAxis dataKey="bucket" tick={{ fontSize: 11, fill: '#888580', fontFamily: MONO }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 11, fill: '#888580', fontFamily: MONO }} axisLine={false} tickLine={false} width={35} />
         <Tooltip
           contentStyle={TOOLTIP_STYLE}
           formatter={(value) => [value, 'Customers']}
@@ -73,8 +74,8 @@ export function CommissionVsRevenueChart({ data }: { data: { tier: string; commi
     <ResponsiveContainer width="100%" height={220}>
       <BarChart data={data} barCategoryGap="30%">
         <CartesianGrid strokeDasharray="3 3" stroke="#232323" vertical={false} />
-        <XAxis dataKey="tier" tick={{ fontSize: 11, fill: '#888580', fontFamily: 'DM Mono, monospace' }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 11, fill: '#888580', fontFamily: 'DM Mono, monospace' }} axisLine={false} tickLine={false}
+        <XAxis dataKey="tier" tick={{ fontSize: 11, fill: '#888580', fontFamily: SANS }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 11, fill: '#888580', fontFamily: MONO }} axisLine={false} tickLine={false}
           tickFormatter={v => `$${((v as number) / 1000).toFixed(0)}k`} width={50} />
         <Tooltip
           contentStyle={TOOLTIP_STYLE}
@@ -84,7 +85,7 @@ export function CommissionVsRevenueChart({ data }: { data: { tier: string; commi
           ]}
           cursor={{ fill: 'rgba(255,255,255,0.03)' }}
         />
-        <Legend formatter={(v) => <span style={{ fontSize: 11, color: '#888580', fontFamily: 'DM Mono, monospace' }}>{v === 'commission' ? 'Commission' : 'Revenue'}</span>} />
+        <Legend formatter={(v) => <span style={{ fontSize: 11, color: '#888580', fontFamily: SANS }}>{v === 'commission' ? 'Commission' : 'Revenue'}</span>} />
         <Bar dataKey="commission" fill="#f5a623" radius={[4, 4, 0, 0]} name="commission" />
         <Bar dataKey="revenue" fill="#4ade9a" radius={[4, 4, 0, 0]} name="revenue" />
       </BarChart>
@@ -102,9 +103,9 @@ export function RefundRateChart({ data }: { data: { origin_source: string; refun
     <ResponsiveContainer width="100%" height={200}>
       <BarChart data={formatted} layout="vertical" barSize={18}>
         <CartesianGrid strokeDasharray="3 3" stroke="#232323" horizontal={false} />
-        <XAxis type="number" tick={{ fontSize: 11, fill: '#888580', fontFamily: 'DM Mono, monospace' }} axisLine={false} tickLine={false}
+        <XAxis type="number" tick={{ fontSize: 11, fill: '#888580', fontFamily: MONO }} axisLine={false} tickLine={false}
           tickFormatter={v => `${(v as number).toFixed(1)}%`} />
-        <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#888580', fontFamily: 'DM Mono, monospace' }} axisLine={false} tickLine={false} width={100} />
+        <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#888580', fontFamily: SANS }} axisLine={false} tickLine={false} width={100} />
         <Tooltip
           contentStyle={TOOLTIP_STYLE}
           formatter={(value) => [`${(value as number).toFixed(1)}%`, 'Refund Rate']}

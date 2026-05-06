@@ -9,9 +9,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { StatCard } from '@/components/stat-card'
 import { ReferralTree } from './referral-tree'
-import {
-  formatCurrency, formatDate, formatNumber, formatRatio, STATUS_COLORS
-} from '@/lib/utils'
+import { formatCurrency, formatDate, formatNumber, formatRatio } from '@/lib/utils'
 import { ArrowLeft, Mail, Phone, Calendar } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -38,8 +36,7 @@ export default async function BADetailPage({ params }: Props) {
 
   return (
     <div className="p-8 space-y-6 max-w-[1400px]">
-      {/* Back */}
-      <Link href="/ambassadors" className="inline-flex items-center gap-2 text-sm text-[#888580] hover:text-[#4ade9a] transition-colors font-mono">
+      <Link href="/ambassadors" className="inline-flex items-center gap-2 text-sm text-[#888580] hover:text-[#4ade9a] transition-colors">
         <ArrowLeft size={16} />
         Back to Leaderboard
       </Link>
@@ -62,19 +59,9 @@ export default async function BADetailPage({ params }: Props) {
                 <Badge variant={ba.ba_tier}>{ba.ba_tier ?? 'Standard'}</Badge>
                 <Badge variant={ba.ba_status}>{ba.ba_status ?? 'unknown'}</Badge>
               </div>
-              <div className="flex flex-wrap gap-4 text-sm text-[#888580] font-mono">
-                {ba.email && (
-                  <span className="flex items-center gap-1.5">
-                    <Mail size={14} />
-                    {ba.email}
-                  </span>
-                )}
-                {ba.phone && (
-                  <span className="flex items-center gap-1.5">
-                    <Phone size={14} />
-                    {ba.phone}
-                  </span>
-                )}
+              <div className="flex flex-wrap gap-4 text-sm text-[#888580]">
+                {ba.email && <span className="flex items-center gap-1.5"><Mail size={14} />{ba.email}</span>}
+                {ba.phone && <span className="flex items-center gap-1.5"><Phone size={14} />{ba.phone}</span>}
                 <span className="flex items-center gap-1.5">
                   <Calendar size={14} />
                   Joined {formatDate(ba.created_at)}
@@ -82,11 +69,11 @@ export default async function BADetailPage({ params }: Props) {
               </div>
             </div>
             <div className="text-right">
-              <p className="text-xs text-[#888580] uppercase tracking-widest mb-1 font-mono">True Network CAC</p>
+              <p className="text-xs text-[#888580] uppercase tracking-widest mb-1">True Network CAC</p>
               <p className="text-3xl font-semibold font-mono text-[#4ade9a]">
                 {formatCurrency(netStats.true_network_cac)}
               </p>
-              <p className="text-xs text-[#888580] font-mono">per network customer</p>
+              <p className="text-xs text-[#888580]">per network customer</p>
             </div>
           </div>
         </CardContent>
@@ -109,9 +96,7 @@ export default async function BADetailPage({ params }: Props) {
 
       {/* Referral Tree */}
       <Card>
-        <CardHeader>
-          <CardTitle>Referral Network Tree</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle>Referral Network Tree</CardTitle></CardHeader>
         <CardContent>
           <ReferralTree baId={id} nodes={treeNodes} />
         </CardContent>
@@ -119,21 +104,19 @@ export default async function BADetailPage({ params }: Props) {
 
       {/* Commission History */}
       <Card>
-        <CardHeader>
-          <CardTitle>Commission History</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle>Commission History</CardTitle></CardHeader>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[#232323] bg-[#111111]">
                 {['Date', 'Customer', 'Order #', 'Amount', 'Attribution', 'Status'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-[#232323]">
               {commissions.length === 0 && (
-                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#888580] font-mono">No commission history</td></tr>
+                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#888580]">No commission history</td></tr>
               )}
               {commissions.map(c => (
                 <tr key={c.id} className="hover:bg-[#1e1e1e] transition-colors">
@@ -141,7 +124,7 @@ export default async function BADetailPage({ params }: Props) {
                   <td className="px-5 py-3 text-[#f0ede8]">{c.referred_customer_name}</td>
                   <td className="px-5 py-3 font-mono text-xs text-[#888580]">{c.order_number ?? '—'}</td>
                   <td className="px-5 py-3 font-semibold font-mono text-[#f0ede8]">{formatCurrency(c.commission_amount)}</td>
-                  <td className="px-5 py-3 text-xs text-[#888580] font-mono">{c.attribution_method}</td>
+                  <td className="px-5 py-3 text-xs text-[#888580]">{c.attribution_method}</td>
                   <td className="px-5 py-3"><Badge variant={c.payout_status}>{c.payout_status}</Badge></td>
                 </tr>
               ))}
@@ -152,21 +135,19 @@ export default async function BADetailPage({ params }: Props) {
 
       {/* Direct Referrals Table */}
       <Card>
-        <CardHeader>
-          <CardTitle>Direct Referrals ({directReferrals.length})</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle>Direct Referrals ({directReferrals.length})</CardTitle></CardHeader>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[#232323] bg-[#111111]">
                 {['Name', 'First Order', 'Orders', 'LTV', 'Subscription', 'Their Referrals'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-[#232323]">
               {directReferrals.length === 0 && (
-                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#888580] font-mono">No direct referrals yet</td></tr>
+                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#888580]">No direct referrals yet</td></tr>
               )}
               {directReferrals.map(c => (
                 <tr key={c.id} className="hover:bg-[#1e1e1e] transition-colors">
@@ -179,9 +160,9 @@ export default async function BADetailPage({ params }: Props) {
                   <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{c.total_orders}</td>
                   <td className="px-5 py-3 font-semibold tabular-nums font-mono text-[#4ade9a]">{formatCurrency(c.net_ltv)}</td>
                   <td className="px-5 py-3">
-                    {c.subscription_status ? (
-                      <Badge variant={c.subscription_status}>{c.subscription_status}</Badge>
-                    ) : <span className="text-[#888580] text-xs">—</span>}
+                    {c.subscription_status
+                      ? <Badge variant={c.subscription_status}>{c.subscription_status}</Badge>
+                      : <span className="text-[#888580] text-xs">—</span>}
                   </td>
                   <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{c.ba_referral_count ?? 0}</td>
                 </tr>
