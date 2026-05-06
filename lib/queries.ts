@@ -12,7 +12,7 @@ export async function getOverviewStats(): Promise<OverviewStats> {
   const db = createServerClient()
   const [orders, customers, bas, commissions] = await Promise.all([
     db.from('orders').select('total'),
-    db.from('customers').select('id', { count: 'exact', head: true }),
+    db.from('customers').select('id', { count: 'exact', head: true }).gt('total_orders', 0),
     db.from('customers').select('id', { count: 'exact', head: true }).eq('is_ba', true).eq('ba_status', 'active'),
     db.from('ambassador_commissions').select('commission_amount').eq('payout_status', 'paid'),
   ])
@@ -26,25 +26,33 @@ export async function getOverviewStats(): Promise<OverviewStats> {
 
 export async function getRevenueByMonth(): Promise<RevenueByMonth[]> {
   const db = createServerClient()
-  const { data } = await db
-    .from('orders')
-    .select('ordered_at, total, customer_id')
-    .order('ordered_at', { ascending: true })
-  if (!data) return []
+  const [{ data: orders }, { data: newCustomers }] = await Promise.all([
+    db.from('orders').select('ordered_at, total').order('ordered_at', { ascending: true }),
+    db.from('customers')
+      .select('first_purchase_date')
+      .not('first_purchase_date', 'is', null)
+      .gt('total_orders', 0),
+  ])
 
-  const byMonth: Record<string, { revenue: number; customers: Set<string> }> = {}
-  for (const o of data) {
-    const dateStr = o.ordered_at
-    if (!dateStr) continue
-    const key = dateStr.slice(0, 7)
-    if (!byMonth[key]) byMonth[key] = { revenue: 0, customers: new Set() }
+  const byMonth: Record<string, { revenue: number; customers: number }> = {}
+
+  for (const o of orders ?? []) {
+    if (!o.ordered_at) continue
+    const key = (o.ordered_at as string).slice(0, 7)
+    if (!byMonth[key]) byMonth[key] = { revenue: 0, customers: 0 }
     byMonth[key].revenue += o.total ?? 0
-    byMonth[key].customers.add(o.customer_id)
   }
+
+  for (const c of newCustomers ?? []) {
+    const key = (c.first_purchase_date as string).slice(0, 7)
+    if (!byMonth[key]) byMonth[key] = { revenue: 0, customers: 0 }
+    byMonth[key].customers++
+  }
+
   return Object.entries(byMonth)
     .sort(([a], [b]) => a.localeCompare(b))
     .slice(-12)
-    .map(([month, d]) => ({ month, revenue: d.revenue, customers: d.customers.size }))
+    .map(([month, d]) => ({ month, revenue: d.revenue, customers: d.customers }))
 }
 
 export async function getChannelBreakdown(): Promise<ChannelBreakdown[]> {

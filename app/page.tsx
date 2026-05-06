@@ -21,10 +21,10 @@ async function OverviewStats() {
   const stats = await getOverviewStats()
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <StatCard label="Total Revenue" value={formatCurrency(stats.totalRevenue)} accent icon={<DollarSign size={18} />} />
-      <StatCard label="Total Customers" value={formatNumber(stats.totalCustomers)} icon={<Users size={18} />} />
+      <StatCard label="All Time Gross Revenue" value={formatCurrency(stats.totalRevenue)} accent icon={<DollarSign size={18} />} />
+      <StatCard label="All Time Total Customers" value={formatNumber(stats.totalCustomers)} icon={<Users size={18} />} />
       <StatCard label="Active Ambassadors" value={formatNumber(stats.totalActiveBAs)} icon={<Star size={18} />} />
-      <StatCard label="Commissions Paid" value={formatCurrency(stats.totalCommissionsPaid)} icon={<TrendingUp size={18} />} />
+      <StatCard label="All Time Commissions Paid" value={formatCurrency(stats.totalCommissionsPaid)} icon={<TrendingUp size={18} />} />
     </div>
   )
 }
