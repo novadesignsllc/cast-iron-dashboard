@@ -5,8 +5,7 @@ import type { BaWithNetwork } from '@/lib/types'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import {
-  formatCurrency, formatNumber, formatRatio, formatPercent,
-  TIER_COLORS, STATUS_COLORS
+  formatCurrency, formatNumber, formatRatio,
 } from '@/lib/utils'
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 
@@ -33,10 +32,10 @@ const COLS: { key: SortKey; label: string; numeric?: boolean }[] = [
 const TIERS = ['All', 'Founder', 'Growth', 'Standard']
 
 function SortIcon({ col, sort }: { col: SortKey; sort: { key: SortKey; dir: 'asc' | 'desc' } | null }) {
-  if (!sort || sort.key !== col) return <ChevronsUpDown size={12} className="text-[#C8C0B4]" />
+  if (!sort || sort.key !== col) return <ChevronsUpDown size={12} className="text-[#444444]" />
   return sort.dir === 'asc'
-    ? <ChevronUp size={12} className="text-[#B87333]" />
-    : <ChevronDown size={12} className="text-[#B87333]" />
+    ? <ChevronUp size={12} className="text-[#4ade9a]" />
+    : <ChevronDown size={12} className="text-[#4ade9a]" />
 }
 
 export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
@@ -68,35 +67,35 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
   return (
     <Card>
       {/* Filters */}
-      <div className="px-6 py-4 border-b border-[#E5E0D8] flex items-center gap-2">
-        <span className="text-xs text-[#6B6B6B] font-medium mr-2">Tier:</span>
+      <div className="px-6 py-4 border-b border-[#232323] flex items-center gap-2">
+        <span className="text-xs text-[#888580] font-mono mr-2">Tier:</span>
         {TIERS.map(t => (
           <button
             key={t}
             onClick={() => setTierFilter(t)}
-            className="px-3 py-1 rounded-full text-xs font-medium border transition-colors"
+            className="px-3 py-1 rounded-full text-xs font-mono border transition-colors"
             style={{
-              background: tierFilter === t ? '#B87333' : 'white',
-              color: tierFilter === t ? 'white' : '#6B6B6B',
-              borderColor: tierFilter === t ? '#B87333' : '#E5E0D8',
+              background: tierFilter === t ? 'rgba(74,222,154,0.15)' : 'transparent',
+              color: tierFilter === t ? '#4ade9a' : '#888580',
+              borderColor: tierFilter === t ? 'rgba(74,222,154,0.4)' : '#2e2e2e',
             }}
           >
             {t}
           </button>
         ))}
-        <span className="ml-auto text-xs text-[#6B6B6B]">{sorted.length} ambassadors</span>
+        <span className="ml-auto text-xs text-[#888580] font-mono">{sorted.length} ambassadors</span>
       </div>
 
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[1100px]">
           <thead>
-            <tr className="border-b border-[#E5E0D8] bg-[#F9F6F1]">
+            <tr className="border-b border-[#232323] bg-[#111111]">
               {COLS.map(col => (
                 <th
                   key={col.key}
                   onClick={() => toggleSort(col.key)}
-                  className="px-4 py-3 text-left text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide cursor-pointer select-none hover:text-[#1C1C1C] whitespace-nowrap"
+                  className="px-4 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest cursor-pointer select-none hover:text-[#f0ede8] whitespace-nowrap font-mono"
                 >
                   <span className="flex items-center gap-1">
                     {col.label}
@@ -106,10 +105,10 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E5E0D8]">
+          <tbody className="divide-y divide-[#232323]">
             {sorted.length === 0 && (
               <tr>
-                <td colSpan={COLS.length} className="px-6 py-12 text-center text-[#6B6B6B]">
+                <td colSpan={COLS.length} className="px-6 py-12 text-center text-[#888580] font-mono">
                   No ambassadors found
                 </td>
               </tr>
@@ -117,10 +116,10 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
             {sorted.map(ba => (
               <tr
                 key={ba.id}
-                className="hover:bg-[#F9F6F1] transition-colors cursor-pointer"
+                className="hover:bg-[#1e1e1e] transition-colors cursor-pointer"
               >
                 <td className="px-4 py-3">
-                  <Link href={`/ambassadors/${ba.id}`} className="font-medium text-[#1C1C1C] hover:text-[#B87333] transition-colors">
+                  <Link href={`/ambassadors/${ba.id}`} className="font-medium text-[#f0ede8] hover:text-[#4ade9a] transition-colors">
                     {ba.first_name} {ba.last_name}
                   </Link>
                 </td>
@@ -130,22 +129,23 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
                 <td className="px-4 py-3">
                   <Badge variant={ba.ba_status}>{ba.ba_status ?? 'unknown'}</Badge>
                 </td>
-                <td className="px-4 py-3 text-right tabular-nums">{formatNumber(ba.ba_referral_count ?? 0)}</td>
-                <td className="px-4 py-3 text-right tabular-nums font-medium">{formatNumber(ba.network_size)}</td>
-                <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(ba.direct_revenue)}</td>
-                <td className="px-4 py-3 text-right tabular-nums font-semibold text-[#B87333]">
+                <td className="px-4 py-3 text-right tabular-nums font-mono text-[#f0ede8]">{formatNumber(ba.ba_referral_count ?? 0)}</td>
+                <td className="px-4 py-3 text-right tabular-nums font-mono text-[#f0ede8]">{formatNumber(ba.network_size)}</td>
+                <td className="px-4 py-3 text-right tabular-nums font-mono text-[#888580]">{formatCurrency(ba.direct_revenue)}</td>
+                <td className="px-4 py-3 text-right tabular-nums font-mono font-semibold text-[#4ade9a]">
                   {formatCurrency(ba.network_revenue)}
                 </td>
-                <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(ba.ba_total_commission ?? 0)}</td>
+                <td className="px-4 py-3 text-right tabular-nums font-mono text-[#888580]">{formatCurrency(ba.ba_total_commission ?? 0)}</td>
                 <td className="px-4 py-3 text-right tabular-nums">
-                  <span className="text-xs font-semibold px-2 py-0.5 bg-[#F9F6F1] rounded border border-[#E5E0D8]">
+                  <span className="text-xs font-mono px-2 py-0.5 bg-[#222222] rounded border border-[#2e2e2e] text-[#f0ede8]">
                     {formatCurrency(ba.true_network_cac)}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-right tabular-nums font-medium" style={{ color: ba.network_roi >= 3 ? '#4A7C59' : ba.network_roi >= 1 ? '#D4821A' : '#C0392B' }}>
+                <td className="px-4 py-3 text-right tabular-nums font-mono font-medium"
+                  style={{ color: ba.network_roi >= 3 ? '#4ade9a' : ba.network_roi >= 1 ? '#f5a623' : '#f05a5a' }}>
                   {formatRatio(ba.network_roi)}
                 </td>
-                <td className="px-4 py-3 text-right tabular-nums">{formatCurrency(ba.avg_referral_ltv)}</td>
+                <td className="px-4 py-3 text-right tabular-nums font-mono text-[#888580]">{formatCurrency(ba.avg_referral_ltv)}</td>
               </tr>
             ))}
           </tbody>

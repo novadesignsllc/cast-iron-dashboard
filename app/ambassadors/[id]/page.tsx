@@ -33,14 +33,13 @@ export default async function BADetailPage({ params }: Props) {
   if (!ba || !ba.is_ba) notFound()
 
   const totalCommission = ba.ba_total_commission ?? 0
-  // Compute paid/pending from commission records
   const paidCommission = commissions.filter(c => c.payout_status === 'paid').reduce((s, c) => s + c.commission_amount, 0)
   const pendingCommission = commissions.filter(c => c.payout_status === 'pending').reduce((s, c) => s + c.commission_amount, 0)
 
   return (
     <div className="p-8 space-y-6 max-w-[1400px]">
       {/* Back */}
-      <Link href="/ambassadors" className="inline-flex items-center gap-2 text-sm text-[#6B6B6B] hover:text-[#B87333] transition-colors">
+      <Link href="/ambassadors" className="inline-flex items-center gap-2 text-sm text-[#888580] hover:text-[#4ade9a] transition-colors font-mono">
         <ArrowLeft size={16} />
         Back to Leaderboard
       </Link>
@@ -50,20 +49,20 @@ export default async function BADetailPage({ params }: Props) {
         <CardContent className="py-6">
           <div className="flex items-start gap-6">
             <div
-              className="w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold text-white flex-shrink-0"
-              style={{ background: '#B87333' }}
+              className="w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold font-mono flex-shrink-0"
+              style={{ background: 'rgba(74,222,154,0.15)', color: '#4ade9a' }}
             >
               {ba.first_name[0]}{ba.last_name[0]}
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-3 flex-wrap mb-2">
-                <h1 className="text-2xl font-bold text-[#1C1C1C]" style={{ fontFamily: 'Playfair Display, serif' }}>
+                <h1 className="text-2xl font-medium text-[#f0ede8]">
                   {ba.first_name} {ba.last_name}
                 </h1>
                 <Badge variant={ba.ba_tier}>{ba.ba_tier ?? 'Standard'}</Badge>
                 <Badge variant={ba.ba_status}>{ba.ba_status ?? 'unknown'}</Badge>
               </div>
-              <div className="flex flex-wrap gap-4 text-sm text-[#6B6B6B]">
+              <div className="flex flex-wrap gap-4 text-sm text-[#888580] font-mono">
                 {ba.email && (
                   <span className="flex items-center gap-1.5">
                     <Mail size={14} />
@@ -83,11 +82,11 @@ export default async function BADetailPage({ params }: Props) {
               </div>
             </div>
             <div className="text-right">
-              <p className="text-xs text-[#6B6B6B] uppercase tracking-wide mb-1">True Network CAC</p>
-              <p className="text-3xl font-bold" style={{ color: '#B87333', fontFamily: 'Playfair Display, serif' }}>
+              <p className="text-xs text-[#888580] uppercase tracking-widest mb-1 font-mono">True Network CAC</p>
+              <p className="text-3xl font-semibold font-mono text-[#4ade9a]">
                 {formatCurrency(netStats.true_network_cac)}
               </p>
-              <p className="text-xs text-[#6B6B6B]">per network customer</p>
+              <p className="text-xs text-[#888580] font-mono">per network customer</p>
             </div>
           </div>
         </CardContent>
@@ -108,7 +107,7 @@ export default async function BADetailPage({ params }: Props) {
         <StatCard label="Pending Commission" value={formatCurrency(pendingCommission)} />
       </div>
 
-      {/* Referral Tree — hero section */}
+      {/* Referral Tree */}
       <Card>
         <CardHeader>
           <CardTitle>Referral Network Tree</CardTitle>
@@ -126,23 +125,23 @@ export default async function BADetailPage({ params }: Props) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E0D8] bg-[#F9F6F1]">
+              <tr className="border-b border-[#232323] bg-[#111111]">
                 {['Date', 'Customer', 'Order #', 'Amount', 'Attribution', 'Status'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E0D8]">
+            <tbody className="divide-y divide-[#232323]">
               {commissions.length === 0 && (
-                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#6B6B6B]">No commission history</td></tr>
+                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#888580] font-mono">No commission history</td></tr>
               )}
               {commissions.map(c => (
-                <tr key={c.id} className="hover:bg-[#F9F6F1] transition-colors">
-                  <td className="px-5 py-3 text-[#6B6B6B]">{formatDate(c.earned_at)}</td>
-                  <td className="px-5 py-3 font-medium">{c.referred_customer_name}</td>
-                  <td className="px-5 py-3 font-mono text-xs text-[#6B6B6B]">{c.order_number ?? '—'}</td>
-                  <td className="px-5 py-3 font-semibold">{formatCurrency(c.commission_amount)}</td>
-                  <td className="px-5 py-3 text-xs text-[#6B6B6B]">{c.attribution_method}</td>
+                <tr key={c.id} className="hover:bg-[#1e1e1e] transition-colors">
+                  <td className="px-5 py-3 text-[#888580] font-mono text-xs">{formatDate(c.earned_at)}</td>
+                  <td className="px-5 py-3 text-[#f0ede8]">{c.referred_customer_name}</td>
+                  <td className="px-5 py-3 font-mono text-xs text-[#888580]">{c.order_number ?? '—'}</td>
+                  <td className="px-5 py-3 font-semibold font-mono text-[#f0ede8]">{formatCurrency(c.commission_amount)}</td>
+                  <td className="px-5 py-3 text-xs text-[#888580] font-mono">{c.attribution_method}</td>
                   <td className="px-5 py-3"><Badge variant={c.payout_status}>{c.payout_status}</Badge></td>
                 </tr>
               ))}
@@ -159,32 +158,32 @@ export default async function BADetailPage({ params }: Props) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E0D8] bg-[#F9F6F1]">
+              <tr className="border-b border-[#232323] bg-[#111111]">
                 {['Name', 'First Order', 'Orders', 'LTV', 'Subscription', 'Their Referrals'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E0D8]">
+            <tbody className="divide-y divide-[#232323]">
               {directReferrals.length === 0 && (
-                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#6B6B6B]">No direct referrals yet</td></tr>
+                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#888580] font-mono">No direct referrals yet</td></tr>
               )}
               {directReferrals.map(c => (
-                <tr key={c.id} className="hover:bg-[#F9F6F1] transition-colors">
+                <tr key={c.id} className="hover:bg-[#1e1e1e] transition-colors">
                   <td className="px-5 py-3">
-                    <Link href={`/customers/${c.id}`} className="font-medium text-[#1C1C1C] hover:text-[#B87333] transition-colors">
+                    <Link href={`/customers/${c.id}`} className="font-medium text-[#f0ede8] hover:text-[#4ade9a] transition-colors">
                       {c.first_name} {c.last_name}
                     </Link>
                   </td>
-                  <td className="px-5 py-3 text-[#6B6B6B]">{formatDate(c.first_purchase_date)}</td>
-                  <td className="px-5 py-3 tabular-nums">{c.total_orders}</td>
-                  <td className="px-5 py-3 font-semibold tabular-nums">{formatCurrency(c.net_ltv)}</td>
+                  <td className="px-5 py-3 text-[#888580] font-mono text-xs">{formatDate(c.first_purchase_date)}</td>
+                  <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{c.total_orders}</td>
+                  <td className="px-5 py-3 font-semibold tabular-nums font-mono text-[#4ade9a]">{formatCurrency(c.net_ltv)}</td>
                   <td className="px-5 py-3">
                     {c.subscription_status ? (
                       <Badge variant={c.subscription_status}>{c.subscription_status}</Badge>
-                    ) : '—'}
+                    ) : <span className="text-[#888580] text-xs">—</span>}
                   </td>
-                  <td className="px-5 py-3 tabular-nums">{c.ba_referral_count ?? 0}</td>
+                  <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{c.ba_referral_count ?? 0}</td>
                 </tr>
               ))}
             </tbody>

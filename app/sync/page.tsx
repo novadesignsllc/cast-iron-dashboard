@@ -34,15 +34,13 @@ async function SyncHealthPage() {
   return (
     <div className="p-8 space-y-6 max-w-[1400px]">
       <div>
-        <h1 className="text-3xl font-bold text-[#1C1C1C] mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
-          Sync Health
-        </h1>
-        <p className="text-[#6B6B6B] text-sm">Data pipeline status and sync history</p>
+        <h1 className="text-2xl font-medium text-[#f0ede8] mb-1">Sync Health</h1>
+        <p className="text-[#888580] text-sm font-mono">Data pipeline status and sync history</p>
       </div>
 
       {/* Summary stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Last Successful Sync" value={lastSuccess} icon={<Activity size={20} />} />
+        <StatCard label="Last Successful Sync" value={lastSuccess} icon={<Activity size={18} />} />
         <StatCard label="Active Sources" value={formatNumber(sourceLogs.length)} />
         <StatCard label="Healthy Sources" value={formatNumber(successCount)} />
         <StatCard label="Failed Sources" value={formatNumber(failedCount)} accent={failedCount > 0} />
@@ -54,27 +52,27 @@ async function SyncHealthPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E0D8] bg-[#F9F6F1]">
+              <tr className="border-b border-[#232323] bg-[#111111]">
                 {['Source', 'Type', 'Status', 'Last Sync', 'Processed', 'Created', 'Updated', 'Error'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E0D8]">
+            <tbody className="divide-y divide-[#232323]">
               {sourceLogs.length === 0 && (
-                <tr><td colSpan={8} className="px-5 py-8 text-center text-[#6B6B6B]">No sync data</td></tr>
+                <tr><td colSpan={8} className="px-5 py-8 text-center text-[#888580] font-mono">No sync data</td></tr>
               )}
               {sourceLogs.map(log => (
                 <tr key={log.id}
-                  className={`hover:bg-[#F9F6F1] transition-colors ${log.status === 'failed' ? 'bg-red-50/50' : ''}`}>
-                  <td className="px-5 py-3 font-medium">{log.source}</td>
-                  <td className="px-5 py-3 text-[#6B6B6B] text-xs">{log.sync_type}</td>
+                  className={`hover:bg-[#1e1e1e] transition-colors ${log.status === 'failed' ? 'bg-[rgba(240,90,90,0.04)]' : ''}`}>
+                  <td className="px-5 py-3 font-medium text-[#f0ede8]">{log.source}</td>
+                  <td className="px-5 py-3 text-[#888580] text-xs font-mono">{log.sync_type}</td>
                   <td className="px-5 py-3"><Badge variant={log.status}>{log.status}</Badge></td>
-                  <td className="px-5 py-3 text-[#6B6B6B]">{timeAgo(log.completed_at ?? log.started_at)}</td>
-                  <td className="px-5 py-3 tabular-nums">{log.records_processed != null ? formatNumber(log.records_processed) : '—'}</td>
-                  <td className="px-5 py-3 tabular-nums text-[#4A7C59]">{log.records_created != null ? formatNumber(log.records_created) : '—'}</td>
-                  <td className="px-5 py-3 tabular-nums text-[#D4821A]">{log.records_updated != null ? formatNumber(log.records_updated) : '—'}</td>
-                  <td className="px-5 py-3 text-xs text-[#C0392B] max-w-[200px] truncate">
+                  <td className="px-5 py-3 text-[#888580] font-mono text-xs">{timeAgo(log.completed_at ?? log.started_at)}</td>
+                  <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{log.records_processed != null ? formatNumber(log.records_processed) : '—'}</td>
+                  <td className="px-5 py-3 tabular-nums font-mono text-[#4ade9a]">{log.records_created != null ? formatNumber(log.records_created) : '—'}</td>
+                  <td className="px-5 py-3 tabular-nums font-mono text-[#f5a623]">{log.records_updated != null ? formatNumber(log.records_updated) : '—'}</td>
+                  <td className="px-5 py-3 text-xs text-[#f05a5a] max-w-[200px] truncate font-mono">
                     {log.error_message ?? '—'}
                   </td>
                 </tr>
@@ -90,34 +88,34 @@ async function SyncHealthPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#E5E0D8] bg-[#F9F6F1]">
+              <tr className="border-b border-[#232323] bg-[#111111]">
                 {['Started', 'Completed', 'Source', 'Type', 'Status', 'Processed', 'Error'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E5E0D8]">
+            <tbody className="divide-y divide-[#232323]">
               {allLogs.length === 0 && (
-                <tr><td colSpan={7} className="px-5 py-8 text-center text-[#6B6B6B]">No sync history</td></tr>
+                <tr><td colSpan={7} className="px-5 py-8 text-center text-[#888580] font-mono">No sync history</td></tr>
               )}
               {allLogs.map(log => (
                 <tr key={log.id}
-                  className={`hover:bg-[#F9F6F1] transition-colors ${log.status === 'failed' ? 'bg-red-50/60' : ''}`}>
-                  <td className="px-5 py-3 text-[#6B6B6B] text-xs whitespace-nowrap">
+                  className={`hover:bg-[#1e1e1e] transition-colors ${log.status === 'failed' ? 'bg-[rgba(240,90,90,0.04)]' : ''}`}>
+                  <td className="px-5 py-3 text-[#888580] text-xs whitespace-nowrap font-mono">
                     {new Date(log.started_at).toLocaleString('en-US', {
                       month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                     })}
                   </td>
-                  <td className="px-5 py-3 text-[#6B6B6B] text-xs whitespace-nowrap">
+                  <td className="px-5 py-3 text-[#888580] text-xs whitespace-nowrap font-mono">
                     {log.completed_at ? new Date(log.completed_at).toLocaleString('en-US', {
                       month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                     }) : '—'}
                   </td>
-                  <td className="px-5 py-3 font-medium">{log.source}</td>
-                  <td className="px-5 py-3 text-xs text-[#6B6B6B]">{log.sync_type}</td>
+                  <td className="px-5 py-3 text-[#f0ede8]">{log.source}</td>
+                  <td className="px-5 py-3 text-xs text-[#888580] font-mono">{log.sync_type}</td>
                   <td className="px-5 py-3"><Badge variant={log.status}>{log.status}</Badge></td>
-                  <td className="px-5 py-3 tabular-nums">{log.records_processed != null ? formatNumber(log.records_processed) : '—'}</td>
-                  <td className="px-5 py-3 text-xs text-[#C0392B] max-w-[200px] truncate" title={log.error_message ?? undefined}>
+                  <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{log.records_processed != null ? formatNumber(log.records_processed) : '—'}</td>
+                  <td className="px-5 py-3 text-xs text-[#f05a5a] max-w-[200px] truncate font-mono" title={log.error_message ?? undefined}>
                     {log.error_message ?? '—'}
                   </td>
                 </tr>

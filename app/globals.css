@@ -1,97 +1,78 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #F9F6F1;
-  --color-primary: #1C1C1C;
-  --color-accent: #B87333;
-  --color-muted: #6B6B6B;
-  --color-border: #E5E0D8;
-  --color-success: #4A7C59;
-  --color-error: #C0392B;
-  --color-warning: #D4821A;
-  --color-surface: #FFFFFF;
-  --color-surface-hover: #F4F0EA;
-
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'Inter', sans-serif;
-
-  --radius-card: 0.75rem;
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
-  --shadow-card-hover: 0 4px 12px 0 rgb(0 0 0 / 0.08);
+  --color-bg: #0f0f0f;
+  --color-surface: #181818;
+  --color-surface2: #222222;
+  --color-border: #232323;
+  --color-border2: #2e2e2e;
+  --color-text: #f0ede8;
+  --color-muted: #888580;
+  --color-faint: #444444;
+  --color-accent: #4ade9a;
+  --color-accent-dim: rgba(74, 222, 154, 0.12);
+  --color-amber: #f5a623;
+  --color-amber-dim: rgba(245, 166, 35, 0.12);
+  --color-red: #f05a5a;
+  --color-red-dim: rgba(240, 90, 90, 0.12);
+  --font-mono: 'DM Mono', monospace;
+  --font-sans: 'DM Sans', sans-serif;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
-  border-color: var(--color-border);
 }
 
-html {
-  height: 100%;
-}
+html { height: 100%; }
 
 body {
-  background-color: var(--color-background);
-  color: var(--color-primary);
-  font-family: var(--font-body);
+  background-color: #0f0f0f;
+  color: #f0ede8;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
   height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #C8C0B4;
-}
+/* Numbers always in mono */
+.mono { font-family: 'DM Mono', monospace; }
 
-/* Table hover */
-.table-row-hover:hover {
-  background-color: var(--color-surface-hover);
-  cursor: pointer;
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #333; }
 
-/* Skeleton animation */
+/* Skeleton */
 @keyframes skeleton-pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50% { opacity: 0.3; }
 }
 .skeleton {
-  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  background-color: var(--color-border);
+  animation: skeleton-pulse 1.8s ease-in-out infinite;
+  background-color: #1e1e1e;
   border-radius: 4px;
 }
 
-/* Tree connector lines */
-.tree-connector::before {
-  content: '';
-  position: absolute;
-  left: -16px;
-  top: 50%;
-  width: 12px;
-  height: 1px;
-  background-color: var(--color-border);
+/* Table row hover */
+.table-row-hover:hover { background-color: #1e1e1e; cursor: pointer; }
+
+/* Input base */
+input, select, textarea {
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  color: #f0ede8;
+  border-radius: 6px;
+  outline: none;
 }
-.tree-connector-vertical::after {
-  content: '';
-  position: absolute;
-  left: -16px;
-  top: -8px;
-  width: 1px;
-  height: calc(50% + 8px);
-  background-color: var(--color-border);
+input:focus, select:focus, textarea:focus {
+  border-color: #4ade9a;
 }
+input::placeholder { color: #444; }

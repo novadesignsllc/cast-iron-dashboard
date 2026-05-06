@@ -13,33 +13,33 @@ export default function Error({
 
   return (
     <div className="p-8">
-      <div className="max-w-2xl mx-auto bg-white border border-[#E5E0D8] rounded-xl p-8 shadow-sm">
+      <div className="max-w-2xl mx-auto bg-[#181818] border border-[#232323] rounded-xl p-8">
         {isCredentialError ? (
           <>
-            <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mb-4">
+            <div className="w-12 h-12 rounded-full bg-[rgba(245,166,35,0.12)] flex items-center justify-center mb-4">
               <span className="text-2xl">🔑</span>
             </div>
-            <h2 className="text-xl font-bold text-[#1C1C1C] mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <h2 className="text-xl font-medium text-[#f0ede8] mb-2">
               Supabase Not Configured
             </h2>
-            <p className="text-[#6B6B6B] mb-4">
-              Add your Supabase credentials to <code className="bg-[#F9F6F1] px-1.5 py-0.5 rounded text-sm font-mono">.env.local</code> to connect to the database.
+            <p className="text-[#888580] mb-4">
+              Add your Supabase credentials to <code className="bg-[#222222] px-1.5 py-0.5 rounded text-sm font-mono text-[#4ade9a]">.env.local</code> to connect to the database.
             </p>
-            <div className="bg-[#F9F6F1] border border-[#E5E0D8] rounded-lg p-4 font-mono text-sm space-y-1">
-              <p className="text-[#6B6B6B]">NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co</p>
-              <p className="text-[#6B6B6B]">NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...</p>
-              <p className="text-[#6B6B6B]">SUPABASE_SERVICE_ROLE_KEY=eyJ...</p>
+            <div className="bg-[#111111] border border-[#232323] rounded-lg p-4 font-mono text-sm space-y-1">
+              <p className="text-[#888580]">NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co</p>
+              <p className="text-[#888580]">NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...</p>
+              <p className="text-[#888580]">SUPABASE_SERVICE_ROLE_KEY=eyJ...</p>
             </div>
-            <p className="text-xs text-[#6B6B6B] mt-3">After adding credentials, restart the dev server.</p>
+            <p className="text-xs text-[#444444] mt-3 font-mono">After adding credentials, restart the dev server.</p>
           </>
         ) : (
           <>
-            <h2 className="text-xl font-bold text-[#C0392B] mb-2">Something went wrong</h2>
-            <p className="text-[#6B6B6B] mb-4 text-sm font-mono">{error.message}</p>
+            <h2 className="text-xl font-medium text-[#f05a5a] mb-2">Something went wrong</h2>
+            <p className="text-[#888580] mb-4 text-sm font-mono">{error.message}</p>
             <button
               onClick={reset}
-              className="px-4 py-2 text-sm font-medium text-white rounded-lg"
-              style={{ background: '#B87333' }}
+              className="px-4 py-2 text-sm font-medium text-[#0f0f0f] rounded-lg font-mono"
+              style={{ background: '#4ade9a' }}
             >
               Try again
             </button>

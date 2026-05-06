@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import {
   ChannelRevenueChart, LTVHistogram, CommissionVsRevenueChart, RefundRateChart
 } from '@/components/charts/revenue-charts'
-import { formatCurrency, formatPercent, formatNumber, formatDateShort, CHANNEL_LABELS } from '@/lib/utils'
+import { formatCurrency, formatPercent, formatNumber, CHANNEL_LABELS } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -46,30 +46,30 @@ async function CohortSection() {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#E5E0D8] bg-[#F9F6F1]">
+            <tr className="border-b border-[#232323] bg-[#111111]">
               {['Cohort', 'Customers', 'Avg LTV', 'Total Revenue', '% Subscribed'].map(h => (
-                <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">{h}</th>
+                <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E5E0D8]">
+          <tbody className="divide-y divide-[#232323]">
             {rows.length === 0 && (
-              <tr><td colSpan={5} className="px-5 py-8 text-center text-[#6B6B6B]">No cohort data</td></tr>
+              <tr><td colSpan={5} className="px-5 py-8 text-center text-[#888580] font-mono">No cohort data</td></tr>
             )}
             {rows.map(row => (
-              <tr key={row.month} className="hover:bg-[#F9F6F1]">
-                <td className="px-5 py-3 font-medium">
+              <tr key={row.month} className="hover:bg-[#1e1e1e]">
+                <td className="px-5 py-3 font-medium font-mono text-[#f0ede8]">
                   {new Date(row.month + '-01').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                 </td>
-                <td className="px-5 py-3 tabular-nums">{formatNumber(row.customers)}</td>
-                <td className="px-5 py-3 tabular-nums">{formatCurrency(row.avg_ltv)}</td>
-                <td className="px-5 py-3 tabular-nums font-semibold">{formatCurrency(row.total_revenue)}</td>
+                <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{formatNumber(row.customers)}</td>
+                <td className="px-5 py-3 tabular-nums font-mono text-[#f0ede8]">{formatCurrency(row.avg_ltv)}</td>
+                <td className="px-5 py-3 tabular-nums font-mono font-semibold text-[#4ade9a]">{formatCurrency(row.total_revenue)}</td>
                 <td className="px-5 py-3 tabular-nums">
                   <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1.5 bg-[#E5E0D8] rounded-full overflow-hidden max-w-[80px]">
-                      <div className="h-full bg-[#4A7C59] rounded-full" style={{ width: `${Math.min(row.pct_subscribed, 100)}%` }} />
+                    <div className="flex-1 h-1.5 bg-[#232323] rounded-full overflow-hidden max-w-[80px]">
+                      <div className="h-full bg-[#4ade9a] rounded-full" style={{ width: `${Math.min(row.pct_subscribed, 100)}%` }} />
                     </div>
-                    <span>{formatPercent(row.pct_subscribed)}</span>
+                    <span className="font-mono text-[#f0ede8]">{formatPercent(row.pct_subscribed)}</span>
                   </div>
                 </td>
               </tr>
@@ -89,25 +89,28 @@ async function TopOrdersSection() {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#E5E0D8] bg-[#F9F6F1]">
+            <tr className="border-b border-[#232323] bg-[#111111]">
               {['Rank', 'Order #', 'Customer', 'Date', 'Total'].map(h => (
-                <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">{h}</th>
+                <th key={h} className="px-5 py-3 text-left text-xs font-medium text-[#888580] uppercase tracking-widest font-mono">{h}</th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E5E0D8]">
+          <tbody className="divide-y divide-[#232323]">
             {orders.map((o, i) => (
-              <tr key={o.id} className="hover:bg-[#F9F6F1]">
+              <tr key={o.id} className="hover:bg-[#1e1e1e]">
                 <td className="px-5 py-3">
-                  <span className="w-6 h-6 rounded-full inline-flex items-center justify-center text-xs font-bold text-white"
-                    style={{ background: i === 0 ? '#B87333' : '#C8C0B4' }}>
+                  <span className="w-6 h-6 rounded-full inline-flex items-center justify-center text-xs font-bold font-mono"
+                    style={{
+                      background: i === 0 ? 'rgba(74,222,154,0.2)' : 'rgba(136,133,128,0.12)',
+                      color: i === 0 ? '#4ade9a' : '#888580',
+                    }}>
                     {i + 1}
                   </span>
                 </td>
-                <td className="px-5 py-3 font-mono text-xs text-[#6B6B6B]">{o.order_number}</td>
-                <td className="px-5 py-3 font-medium">{o.customer_name}</td>
-                <td className="px-5 py-3 text-[#6B6B6B]">{new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-                <td className="px-5 py-3 font-bold text-[#B87333]">{formatCurrency(o.total)}</td>
+                <td className="px-5 py-3 font-mono text-xs text-[#888580]">{o.order_number}</td>
+                <td className="px-5 py-3 text-[#f0ede8]">{o.customer_name}</td>
+                <td className="px-5 py-3 text-[#888580] font-mono text-xs">{new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                <td className="px-5 py-3 font-bold font-mono text-[#4ade9a]">{formatCurrency(o.total)}</td>
               </tr>
             ))}
           </tbody>
@@ -144,10 +147,10 @@ async function CommissionSection() {
 async function FunnelSection() {
   const funnel = await getReferralFunnel()
   const steps = [
-    { label: 'Total Customers', value: funnel.total, color: '#1C1C1C' },
-    { label: 'Has Referral Code', value: funnel.hasCode, color: '#B87333' },
-    { label: 'Code Used 1+ Times', value: funnel.codeUsedOnce, color: '#4A7C59' },
-    { label: 'Code Used 3+ Times', value: funnel.codeUsedThreePlus, color: '#D4821A' },
+    { label: 'Total Customers', value: funnel.total, color: '#4ade9a' },
+    { label: 'Has Referral Code', value: funnel.hasCode, color: '#f5a623' },
+    { label: 'Code Used 1+ Times', value: funnel.codeUsedOnce, color: '#60a5fa' },
+    { label: 'Code Used 3+ Times', value: funnel.codeUsedThreePlus, color: '#a78bfa' },
   ]
   const max = steps[0].value || 1
   return (
@@ -158,20 +161,21 @@ async function FunnelSection() {
           {steps.map((step, i) => (
             <div key={step.label}>
               <div className="flex justify-between text-sm mb-1">
-                <span className="font-medium text-[#1C1C1C]">{step.label}</span>
-                <span className="font-semibold tabular-nums">{formatNumber(step.value)}</span>
+                <span className="text-[#888580] font-mono">{step.label}</span>
+                <span className="font-semibold tabular-nums font-mono text-[#f0ede8]">{formatNumber(step.value)}</span>
               </div>
-              <div className="h-2.5 bg-[#E5E0D8] rounded-full overflow-hidden">
+              <div className="h-2 bg-[#222222] rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all"
                   style={{
                     width: `${(step.value / max) * 100}%`,
                     background: step.color,
+                    opacity: 0.8,
                   }}
                 />
               </div>
               {i < steps.length - 1 && (
-                <p className="text-xs text-[#6B6B6B] mt-1">
+                <p className="text-xs text-[#888580] mt-1 font-mono">
                   {steps[i + 1].value > 0 ? `${formatPercent((steps[i + 1].value / Math.max(step.value, 1)) * 100)} conversion` : ''}
                 </p>
               )}
@@ -187,10 +191,8 @@ export default function RevenuePage() {
   return (
     <div className="p-8 space-y-6 max-w-[1400px]">
       <div>
-        <h1 className="text-3xl font-bold text-[#1C1C1C] mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
-          Revenue & Attribution
-        </h1>
-        <p className="text-[#6B6B6B] text-sm">Channel performance, LTV analysis, and referral funnel</p>
+        <h1 className="text-2xl font-medium text-[#f0ede8] mb-1">Revenue & Attribution</h1>
+        <p className="text-[#888580] text-sm font-mono">Channel performance, LTV analysis, and referral funnel</p>
       </div>
 
       <Suspense fallback={<Skeleton className="h-72 rounded-xl" />}>

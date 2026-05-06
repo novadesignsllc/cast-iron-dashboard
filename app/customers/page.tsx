@@ -11,7 +11,6 @@ export const revalidate = 0
 async function CustomerData() {
   const customers = await getAllCustomers()
 
-  // Enrich with referrer/BA names (batch)
   const referrerIds = [...new Set(customers.map(c => c.referred_by_customer_id).filter(Boolean) as string[])]
   const originBAIds = [...new Set(customers.map(c => c.origin_ba_id).filter(Boolean) as string[])]
 
@@ -41,10 +40,8 @@ export default function CustomersPage() {
   return (
     <div className="p-8 space-y-6 max-w-[1400px]">
       <div>
-        <h1 className="text-3xl font-bold text-[#1C1C1C] mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
-          Customer Explorer
-        </h1>
-        <p className="text-[#6B6B6B] text-sm">Search, filter, and explore all customers</p>
+        <h1 className="text-2xl font-medium text-[#f0ede8] mb-1">Customer Explorer</h1>
+        <p className="text-[#888580] text-sm font-mono">Search, filter, and explore all customers</p>
       </div>
       <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
         <CustomerData />

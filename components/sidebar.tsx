@@ -16,27 +16,27 @@ export function Sidebar() {
   const path = usePathname()
 
   return (
-    <aside className="fixed inset-y-0 left-0 w-60 bg-[#1C1C1C] flex flex-col z-50">
+    <aside className="fixed inset-y-0 left-0 w-60 bg-[#111111] flex flex-col z-50 border-r border-[#232323]">
       {/* Logo */}
-      <div className="px-6 py-6 border-b border-white/10">
+      <div className="px-6 py-6 border-b border-[#232323]">
         <div className="flex items-center gap-3">
           <div
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-            style={{ background: '#B87333' }}
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-[#0f0f0f] font-bold text-sm font-mono"
+            style={{ background: '#4ade9a' }}
           >
             CI
           </div>
           <div>
-            <p className="text-white font-semibold text-sm leading-tight" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <p className="text-[#f0ede8] font-medium text-sm leading-tight">
               Cast Iron
             </p>
-            <p className="text-white/50 text-xs">Nutrition</p>
+            <p className="text-[#888580] text-xs font-mono">Nutrition</p>
           </div>
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {NAV.map(({ href, label, icon: Icon }) => {
           const isActive = href === '/' ? path === '/' : path.startsWith(href)
           return (
@@ -44,13 +44,13 @@ export function Sidebar() {
               key={href}
               href={href}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150',
                 isActive
-                  ? 'bg-[#B87333] text-white shadow-sm'
-                  : 'text-white/60 hover:text-white hover:bg-white/10'
+                  ? 'bg-[rgba(74,222,154,0.12)] text-[#4ade9a] font-medium'
+                  : 'text-[#888580] hover:text-[#f0ede8] hover:bg-[#1e1e1e]'
               )}
             >
-              <Icon size={18} />
+              <Icon size={16} />
               {label}
             </Link>
           )
@@ -58,9 +58,9 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-4 border-t border-white/10">
-        <p className="text-white/30 text-xs">Internal Dashboard</p>
-        <p className="text-white/20 text-xs">Read-only · v1.0</p>
+      <div className="px-4 py-4 border-t border-[#232323]">
+        <p className="text-[#444444] text-xs font-mono">Internal Dashboard</p>
+        <p className="text-[#333] text-xs font-mono">Read-only · v1.0</p>
       </div>
     </aside>
   )

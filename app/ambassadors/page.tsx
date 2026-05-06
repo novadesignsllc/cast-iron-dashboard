@@ -16,10 +16,8 @@ export default function AmbassadorsPage() {
   return (
     <div className="p-8 space-y-6 max-w-[1400px]">
       <div>
-        <h1 className="text-3xl font-bold text-[#1C1C1C] mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
-          Brand Ambassador Leaderboard
-        </h1>
-        <p className="text-[#6B6B6B] text-sm">Sortable performance metrics for all brand ambassadors</p>
+        <h1 className="text-2xl font-medium text-[#f0ede8] mb-1">Brand Ambassador Leaderboard</h1>
+        <p className="text-[#888580] text-sm font-mono">Sortable performance metrics for all brand ambassadors</p>
       </div>
       <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
         <AmbassadorData />

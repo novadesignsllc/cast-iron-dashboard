@@ -5,17 +5,17 @@ import {
 import type { ChannelBreakdown } from '@/lib/types'
 import { CHANNEL_LABELS, formatCurrency } from '@/lib/utils'
 
-const COLORS = ['#B87333', '#4A7C59', '#1C1C1C', '#D4821A', '#6B6B6B', '#8B6B4A', '#C0392B']
+const COLORS = ['#4ade9a', '#f5a623', '#f05a5a', '#60a5fa', '#a78bfa', '#fb923c', '#888580']
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ChannelTooltip({ active, payload }: any) {
   if (!active || !payload?.length) return null
   const p = payload[0]
   return (
-    <div className="bg-white border border-[#E5E0D8] rounded-lg p-3 shadow-md">
-      <p className="text-xs font-semibold text-[#1C1C1C] mb-1">{p.name}</p>
-      <p className="text-xs text-[#6B6B6B]">{formatCurrency(p.value ?? 0)}</p>
-      <p className="text-xs text-[#6B6B6B]">{p.payload?.customers ?? 0} customers</p>
+    <div className="bg-[#181818] border border-[#2e2e2e] rounded-lg p-3">
+      <p className="text-xs font-semibold text-[#f0ede8] mb-1 font-mono">{p.name}</p>
+      <p className="text-xs text-[#888580] font-mono">{formatCurrency(p.value ?? 0)}</p>
+      <p className="text-xs text-[#888580] font-mono">{p.payload?.customers ?? 0} customers</p>
     </div>
   )
 }
@@ -38,6 +38,7 @@ export function ChannelPieChart({ data }: { data: ChannelBreakdown[] }) {
           outerRadius={95}
           innerRadius={50}
           paddingAngle={2}
+          stroke="none"
         >
           {formatted.map((_, i) => (
             <Cell key={i} fill={COLORS[i % COLORS.length]} />
@@ -49,9 +50,9 @@ export function ChannelPieChart({ data }: { data: ChannelBreakdown[] }) {
           align="right"
           verticalAlign="middle"
           iconType="circle"
-          iconSize={8}
+          iconSize={7}
           formatter={(value) => (
-            <span style={{ fontSize: 11, color: '#6B6B6B' }}>{value}</span>
+            <span style={{ fontSize: 11, color: '#888580', fontFamily: 'DM Mono, monospace' }}>{value}</span>
           )}
         />
       </PieChart>
