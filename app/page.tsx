@@ -109,8 +109,8 @@ async function RecentOrdersSection() {
                 <td className="px-6 py-3 font-mono text-xs text-[#6B6B6B]">{o.order_number}</td>
                 <td className="px-6 py-3 font-medium">{o.customer_name}</td>
                 <td className="px-6 py-3 text-[#6B6B6B]">{formatDate(o.created_at)}</td>
-                <td className="px-6 py-3 font-semibold">{formatCurrency(o.total_price)}</td>
-                <td className="px-6 py-3"><Badge variant={o.status?.toLowerCase()}>{o.status ?? 'unknown'}</Badge></td>
+                <td className="px-6 py-3 font-semibold">{formatCurrency(o.total)}</td>
+                <td className="px-6 py-3"><Badge variant={o.fulfillment_status?.toLowerCase()}>{o.fulfillment_status ?? o.financial_status ?? 'unknown'}</Badge></td>
               </tr>
             ))}
           </tbody>

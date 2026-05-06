@@ -26,20 +26,20 @@ export interface Customer {
   ba_status?: BaStatus
   ba_referral_code?: string
   ba_referral_count?: number
+  referral_count?: number
   ba_total_commission?: number
-  ba_commission_paid?: number
-  ba_commission_pending?: number
   total_orders: number
   net_ltv: number
-  predicted_clv?: number
-  churn_risk?: ChurnRisk
+  klaviyo_predicted_clv?: number
+  klaviyo_churn_risk?: ChurnRisk
   subscription_status?: SubscriptionStatus
   origin_source?: OriginSource
   referred_by_customer_id?: string
   origin_ba_id?: string
-  email_consent: boolean
-  sms_consent: boolean
+  klaviyo_email_consent?: boolean
+  klaviyo_sms_consent?: boolean
   first_purchase_date?: string
+  last_purchase_date?: string
 }
 
 export interface Order {
@@ -47,33 +47,25 @@ export interface Order {
   customer_id: string
   order_number: string
   created_at: string
-  total_price: number
-  discount_codes?: string
-  status: string
-  line_items?: Array<{ title: string; quantity: number; price: number }>
-  origin_ba_id?: string
-  referred_by_customer_id?: string
-}
-
-export interface ReferralCode {
-  id: string
-  customer_id: string
-  code: string
-  created_at: string
-  uses_count: number
-  total_revenue_generated: number
+  ordered_at?: string
+  total: number
+  discount_code?: string
+  fulfillment_status?: string
+  financial_status?: string
+  line_items?: Array<{ qty: number; price: number; product: string }>
 }
 
 export interface AmbassadorCommission {
   id: string
-  ba_customer_id: string
-  referred_customer_id: string
+  ambassador_id: string
+  customer_id: string
   order_id: string
   order_number?: string
-  amount: number
+  commission_amount: number
+  commission_tier?: string
   attribution_method: string
-  status: 'paid' | 'pending' | 'reversed'
-  created_at: string
+  payout_status: 'paid' | 'pending' | 'reversed'
+  earned_at: string
   paid_at?: string
   referred_customer_name?: string
 }

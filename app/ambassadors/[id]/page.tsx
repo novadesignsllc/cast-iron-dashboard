@@ -32,9 +32,10 @@ export default async function BADetailPage({ params }: Props) {
 
   if (!ba || !ba.is_ba) notFound()
 
-  const pendingCommission = ba.ba_commission_pending ?? 0
-  const paidCommission = ba.ba_commission_paid ?? 0
   const totalCommission = ba.ba_total_commission ?? 0
+  // Compute paid/pending from commission records
+  const paidCommission = commissions.filter(c => c.payout_status === 'paid').reduce((s, c) => s + c.commission_amount, 0)
+  const pendingCommission = commissions.filter(c => c.payout_status === 'pending').reduce((s, c) => s + c.commission_amount, 0)
 
   return (
     <div className="p-8 space-y-6 max-w-[1400px]">
@@ -137,12 +138,12 @@ export default async function BADetailPage({ params }: Props) {
               )}
               {commissions.map(c => (
                 <tr key={c.id} className="hover:bg-[#F9F6F1] transition-colors">
-                  <td className="px-5 py-3 text-[#6B6B6B]">{formatDate(c.created_at)}</td>
+                  <td className="px-5 py-3 text-[#6B6B6B]">{formatDate(c.earned_at)}</td>
                   <td className="px-5 py-3 font-medium">{c.referred_customer_name}</td>
                   <td className="px-5 py-3 font-mono text-xs text-[#6B6B6B]">{c.order_number ?? '—'}</td>
-                  <td className="px-5 py-3 font-semibold">{formatCurrency(c.amount)}</td>
+                  <td className="px-5 py-3 font-semibold">{formatCurrency(c.commission_amount)}</td>
                   <td className="px-5 py-3 text-xs text-[#6B6B6B]">{c.attribution_method}</td>
-                  <td className="px-5 py-3"><Badge variant={c.status}>{c.status}</Badge></td>
+                  <td className="px-5 py-3"><Badge variant={c.payout_status}>{c.payout_status}</Badge></td>
                 </tr>
               ))}
             </tbody>

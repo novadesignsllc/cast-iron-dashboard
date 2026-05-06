@@ -10,17 +10,17 @@ import type {
 
 export async function getOverviewStats(): Promise<OverviewStats> {
   const db = createServerClient()
-  const [revenue, customers, bas, commissions] = await Promise.all([
-    db.from('orders').select('total_price').then(r => r.data),
+  const [orders, customers, bas, commissions] = await Promise.all([
+    db.from('orders').select('total'),
     db.from('customers').select('id', { count: 'exact', head: true }),
     db.from('customers').select('id', { count: 'exact', head: true }).eq('is_ba', true).eq('ba_status', 'active'),
-    db.from('customers').select('ba_commission_paid').eq('is_ba', true).then(r => r.data),
+    db.from('ambassador_commissions').select('commission_amount').eq('payout_status', 'paid'),
   ])
   return {
-    totalRevenue: (revenue ?? []).reduce((s, o) => s + (o.total_price ?? 0), 0),
+    totalRevenue: (orders.data ?? []).reduce((s, o) => s + (o.total ?? 0), 0),
     totalCustomers: customers.count ?? 0,
     totalActiveBAs: bas.count ?? 0,
-    totalCommissionsPaid: (commissions ?? []).reduce((s, c) => s + (c.ba_commission_paid ?? 0), 0),
+    totalCommissionsPaid: (commissions.data ?? []).reduce((s, c) => s + (c.commission_amount ?? 0), 0),
   }
 }
 
@@ -28,15 +28,17 @@ export async function getRevenueByMonth(): Promise<RevenueByMonth[]> {
   const db = createServerClient()
   const { data } = await db
     .from('orders')
-    .select('created_at, total_price, customer_id')
-    .order('created_at', { ascending: true })
+    .select('ordered_at, total, customer_id')
+    .order('ordered_at', { ascending: true })
   if (!data) return []
 
   const byMonth: Record<string, { revenue: number; customers: Set<string> }> = {}
   for (const o of data) {
-    const key = o.created_at.slice(0, 7)
+    const dateStr = o.ordered_at
+    if (!dateStr) continue
+    const key = dateStr.slice(0, 7)
     if (!byMonth[key]) byMonth[key] = { revenue: 0, customers: new Set() }
-    byMonth[key].revenue += o.total_price ?? 0
+    byMonth[key].revenue += o.total ?? 0
     byMonth[key].customers.add(o.customer_id)
   }
   return Object.entries(byMonth)
@@ -89,77 +91,76 @@ export async function getRecentOrders(limit = 10): Promise<(Order & { customer_n
 }
 
 export async function getSyncStatus(): Promise<SyncLog[]> {
-  const db = createServerClient()
-  const { data } = await db
-    .from('sync_log')
-    .select('*')
-    .order('started_at', { ascending: false })
-    .limit(50)
-  return (data ?? []) as SyncLog[]
+  return getSyncLogs(50)
 }
 
 export async function getTopBasByNetworkRevenue(limit = 5): Promise<BaWithNetwork[]> {
   const db = createServerClient()
-  const { data, error } = await db.rpc('get_ba_network_stats').limit(limit)
-  if (error || !data) {
-    // Fallback: simple query without RPC
-    const { data: bas } = await db
-      .from('customers')
-      .select('*')
-      .eq('is_ba', true)
-      .order('ba_total_commission', { ascending: false })
-      .limit(limit)
-    return (bas ?? []).map(b => ({
-      ...b,
-      network_size: b.ba_referral_count ?? 0,
-      network_revenue: b.net_ltv ?? 0,
-      direct_revenue: b.net_ltv ?? 0,
-      true_network_cac: 0,
-      network_roi: 0,
-      avg_referral_ltv: 0,
-    })) as BaWithNetwork[]
+  const [{ data: bas }, { data: chains }, { data: allCustomers }] = await Promise.all([
+    db.from('customers').select('*').eq('is_ba', true),
+    db.from('referral_chains').select('origin_ba_id, customer_id'),
+    db.from('customers').select('id, net_ltv, referred_by_customer_id'),
+  ])
+
+  const ltvMap = new Map((allCustomers ?? []).map(c => [c.id, c.net_ltv ?? 0]))
+  const networkMap: Record<string, { size: number; revenue: number; ltvs: number[] }> = {}
+  for (const chain of chains ?? []) {
+    if (!chain.origin_ba_id) continue
+    if (!networkMap[chain.origin_ba_id]) networkMap[chain.origin_ba_id] = { size: 0, revenue: 0, ltvs: [] }
+    const ltv = ltvMap.get(chain.customer_id) ?? 0
+    networkMap[chain.origin_ba_id].size++
+    networkMap[chain.origin_ba_id].revenue += ltv
+    networkMap[chain.origin_ba_id].ltvs.push(ltv)
   }
-  return data as BaWithNetwork[]
+
+  return (bas ?? [])
+    .map(ba => {
+      const net = networkMap[ba.id] ?? { size: 0, revenue: 0, ltvs: [] }
+      const commission = ba.ba_total_commission ?? 0
+      const avgLtv = net.ltvs.length > 0 ? net.ltvs.reduce((a, b) => a + b, 0) / net.ltvs.length : 0
+      return {
+        ...ba,
+        network_size: net.size,
+        network_revenue: net.revenue,
+        direct_revenue: 0,
+        true_network_cac: net.size > 0 ? commission / net.size : 0,
+        network_roi: commission > 0 ? net.revenue / commission : 0,
+        avg_referral_ltv: avgLtv,
+      } as BaWithNetwork
+    })
+    .sort((a, b) => b.network_revenue - a.network_revenue)
+    .slice(0, limit)
 }
 
 // ─── Ambassadors ─────────────────────────────────────────────────────────────
 
 export async function getAllBAsWithNetwork(): Promise<BaWithNetwork[]> {
   const db = createServerClient()
-
-  // Main BA query using referral_chains view
-  const { data: bas } = await db
-    .from('customers')
-    .select('*')
-    .eq('is_ba', true)
-    .order('ba_total_commission', { ascending: false })
+  const [{ data: bas }, { data: chains }, { data: allCustomers }] = await Promise.all([
+    db.from('customers').select('*').eq('is_ba', true).order('ba_total_commission', { ascending: false }),
+    db.from('referral_chains').select('origin_ba_id, customer_id'),
+    db.from('customers').select('id, net_ltv, referred_by_customer_id'),
+  ])
 
   if (!bas || bas.length === 0) return []
 
-  // Get network sizes from referral_chains view
-  const { data: chains } = await db
-    .from('referral_chains')
-    .select('origin_ba_id, customer_id, net_ltv')
-
+  const ltvMap = new Map((allCustomers ?? []).map(c => [c.id, c.net_ltv ?? 0]))
   const networkMap: Record<string, { size: number; revenue: number; ltvs: number[] }> = {}
   for (const chain of chains ?? []) {
     if (!chain.origin_ba_id) continue
     if (!networkMap[chain.origin_ba_id]) networkMap[chain.origin_ba_id] = { size: 0, revenue: 0, ltvs: [] }
+    const ltv = ltvMap.get(chain.customer_id) ?? 0
     networkMap[chain.origin_ba_id].size++
-    networkMap[chain.origin_ba_id].revenue += chain.net_ltv ?? 0
-    networkMap[chain.origin_ba_id].ltvs.push(chain.net_ltv ?? 0)
+    networkMap[chain.origin_ba_id].revenue += ltv
+    networkMap[chain.origin_ba_id].ltvs.push(ltv)
   }
 
-  // Get direct revenue per BA
-  const { data: directOrders } = await db
-    .from('orders')
-    .select('origin_ba_id, total_price, referred_by_customer_id')
-    .not('origin_ba_id', 'is', null)
-
-  const directRevMap: Record<string, number> = {}
-  for (const o of directOrders ?? []) {
-    if (!o.origin_ba_id) continue
-    directRevMap[o.origin_ba_id] = (directRevMap[o.origin_ba_id] ?? 0) + (o.total_price ?? 0)
+  // Direct revenue: sum net_ltv of customers directly referred by this BA
+  const directRevenueMap: Record<string, number> = {}
+  for (const c of allCustomers ?? []) {
+    if (c.referred_by_customer_id) {
+      directRevenueMap[c.referred_by_customer_id] = (directRevenueMap[c.referred_by_customer_id] ?? 0) + (c.net_ltv ?? 0)
+    }
   }
 
   return bas.map(ba => {
@@ -170,7 +171,7 @@ export async function getAllBAsWithNetwork(): Promise<BaWithNetwork[]> {
       ...ba,
       network_size: net.size,
       network_revenue: net.revenue,
-      direct_revenue: directRevMap[ba.id] ?? 0,
+      direct_revenue: directRevenueMap[ba.id] ?? 0,
       true_network_cac: net.size > 0 ? commission / net.size : 0,
       network_roi: commission > 0 ? net.revenue / commission : 0,
       avg_referral_ltv: avgLtv,
@@ -180,11 +181,7 @@ export async function getAllBAsWithNetwork(): Promise<BaWithNetwork[]> {
 
 export async function getBAById(id: string): Promise<Customer | null> {
   const db = createServerClient()
-  const { data } = await db
-    .from('customers')
-    .select('*')
-    .eq('id', id)
-    .single()
+  const { data } = await db.from('customers').select('*').eq('id', id).single()
   return (data as Customer) ?? null
 }
 
@@ -192,17 +189,17 @@ export async function getBACommissions(baId: string): Promise<AmbassadorCommissi
   const db = createServerClient()
   const { data } = await db
     .from('ambassador_commissions')
-    .select('*, referred_customer:referred_customer_id(first_name, last_name), orders(order_number)')
-    .eq('ba_customer_id', baId)
-    .order('created_at', { ascending: false })
+    .select('*, referred_customer:customer_id(first_name, last_name), order:order_id(order_number)')
+    .eq('ambassador_id', baId)
+    .order('earned_at', { ascending: false })
   if (!data) return []
   return data.map((c: Record<string, unknown>) => {
     const customer = c.referred_customer as { first_name: string; last_name: string } | null
-    const order = c.orders as { order_number: string } | null
+    const order = c.order as { order_number: string } | null
     return {
       ...c,
       referred_customer: undefined,
-      orders: undefined,
+      order: undefined,
       referred_customer_name: customer ? `${customer.first_name} ${customer.last_name}` : 'Unknown',
       order_number: order?.order_number,
     } as unknown as AmbassadorCommission
@@ -211,28 +208,33 @@ export async function getBACommissions(baId: string): Promise<AmbassadorCommissi
 
 export async function getReferralTree(baId: string): Promise<ReferralTreeNode[]> {
   const db = createServerClient()
-  // Use raw SQL via rpc or fall back to referral_chains view
-  const { data } = await db
-    .from('referral_chains')
-    .select('customer_id, origin_ba_id, depth, path, customers(first_name, last_name, net_ltv, is_ba, ba_tier, referred_by_customer_id)')
-    .eq('origin_ba_id', baId)
-    .order('depth', { ascending: true })
+  // referral_chains view includes first_name, last_name, referred_by_customer_id
+  // but no net_ltv — fetch separately
+  const [{ data: chainRows }, { data: customers }] = await Promise.all([
+    db.from('referral_chains')
+      .select('customer_id, origin_ba_id, depth, path, first_name, last_name, referred_by_customer_id')
+      .eq('origin_ba_id', baId)
+      .order('depth', { ascending: true }),
+    db.from('customers').select('id, net_ltv, is_ba, ba_tier'),
+  ])
 
-  if (!data) return []
+  if (!chainRows) return []
 
-  return data.map((row: Record<string, unknown>) => {
-    const c = row.customers as { first_name: string; last_name: string; net_ltv: number; is_ba: boolean; ba_tier: string; referred_by_customer_id: string } | null
+  const customerMap = new Map((customers ?? []).map(c => [c.id, c]))
+
+  return chainRows.map(row => {
+    const c = customerMap.get(row.customer_id)
     return {
-      id: row.customer_id as string,
-      first_name: c?.first_name ?? '',
-      last_name: c?.last_name ?? '',
+      id: row.customer_id,
+      first_name: row.first_name ?? '',
+      last_name: row.last_name ?? '',
       net_ltv: c?.net_ltv ?? 0,
-      referred_by_customer_id: c?.referred_by_customer_id,
-      origin_ba_id: row.origin_ba_id as string,
-      depth: row.depth as number,
-      path: (row.path as string[]) ?? [],
+      referred_by_customer_id: row.referred_by_customer_id,
+      origin_ba_id: row.origin_ba_id,
+      depth: row.depth,
+      path: row.path ?? [],
       is_ba: c?.is_ba ?? false,
-      ba_tier: c?.ba_tier as string,
+      ba_tier: c?.ba_tier,
     } as ReferralTreeNode
   })
 }
@@ -255,16 +257,19 @@ export async function getBANetworkStats(baId: string): Promise<{
   network_roi: number
 }> {
   const db = createServerClient()
-  const [chainData, orderData, baData] = await Promise.all([
-    db.from('referral_chains').select('customer_id, net_ltv').eq('origin_ba_id', baId),
-    db.from('orders').select('total_price').eq('origin_ba_id', baId),
+  const [{ data: chainRows }, { data: allCustomers }, { data: baData }] = await Promise.all([
+    db.from('referral_chains').select('customer_id').eq('origin_ba_id', baId),
+    db.from('customers').select('id, net_ltv, referred_by_customer_id'),
     db.from('customers').select('ba_total_commission').eq('id', baId).single(),
   ])
 
-  const networkSize = chainData.data?.length ?? 0
-  const networkRevenue = (chainData.data ?? []).reduce((s, r) => s + (r.net_ltv ?? 0), 0)
-  const directRevenue = (orderData.data ?? []).reduce((s, o) => s + (o.total_price ?? 0), 0)
-  const commission = baData.data?.ba_total_commission ?? 0
+  const ltvMap = new Map((allCustomers ?? []).map(c => [c.id, c.net_ltv ?? 0]))
+  const networkSize = chainRows?.length ?? 0
+  const networkRevenue = (chainRows ?? []).reduce((s, r) => s + (ltvMap.get(r.customer_id) ?? 0), 0)
+  const directRevenue = (allCustomers ?? [])
+    .filter(c => c.referred_by_customer_id === baId)
+    .reduce((s, c) => s + (c.net_ltv ?? 0), 0)
+  const commission = baData?.ba_total_commission ?? 0
 
   return {
     network_size: networkSize,
@@ -288,11 +293,7 @@ export async function getAllCustomers(): Promise<Customer[]> {
 
 export async function getCustomerById(id: string): Promise<Customer | null> {
   const db = createServerClient()
-  const { data } = await db
-    .from('customers')
-    .select('*')
-    .eq('id', id)
-    .single()
+  const { data } = await db.from('customers').select('*').eq('id', id).single()
   return (data as Customer) ?? null
 }
 
@@ -302,7 +303,7 @@ export async function getCustomerOrders(customerId: string): Promise<Order[]> {
     .from('orders')
     .select('*')
     .eq('customer_id', customerId)
-    .order('created_at', { ascending: false })
+    .order('ordered_at', { ascending: false })
   return (data ?? []) as Order[]
 }
 
@@ -364,7 +365,7 @@ export async function getCohortAnalysis(): Promise<CohortRow[]> {
 
   const byCohort: Record<string, { ltvs: number[]; subscribed: number }> = {}
   for (const c of data) {
-    const month = c.first_purchase_date!.slice(0, 7)
+    const month = (c.first_purchase_date as string).slice(0, 7)
     if (!byCohort[month]) byCohort[month] = { ltvs: [], subscribed: 0 }
     byCohort[month].ltvs.push(c.net_ltv ?? 0)
     if (c.subscription_status === 'active') byCohort[month].subscribed++
@@ -386,7 +387,7 @@ export async function getTopOrders(limit = 10): Promise<(Order & { customer_name
   const { data } = await db
     .from('orders')
     .select('*, customers(first_name, last_name)')
-    .order('total_price', { ascending: false })
+    .order('total', { ascending: false })
     .limit(limit)
   if (!data) return []
   return data.map((o: Record<string, unknown>) => {
@@ -401,27 +402,26 @@ export async function getTopOrders(limit = 10): Promise<(Order & { customer_name
 
 export async function getRefundsByChannel(): Promise<{ origin_source: string; refund_rate: number; total_refunds: number }[]> {
   const db = createServerClient()
-  const [{ data: orders }, { data: refunds }] = await Promise.all([
-    db.from('orders').select('customer_id, total_price'),
+  const [{ data: orders }, { data: refunds }, { data: customers }] = await Promise.all([
+    db.from('orders').select('customer_id, total'),
     db.from('refunds').select('customer_id, amount'),
+    db.from('customers').select('id, origin_source'),
   ])
-  const { data: customers } = await db.from('customers').select('id, origin_source')
 
   const sourceMap: Record<string, string> = {}
   for (const c of customers ?? []) {
     sourceMap[c.id] = c.origin_source ?? 'direct'
   }
 
-  const byChannel: Record<string, { revenue: number; refunds: number; orders: number }> = {}
+  const byChannel: Record<string, { revenue: number; refunds: number }> = {}
   for (const o of orders ?? []) {
     const src = sourceMap[o.customer_id] ?? 'direct'
-    if (!byChannel[src]) byChannel[src] = { revenue: 0, refunds: 0, orders: 0 }
-    byChannel[src].revenue += o.total_price ?? 0
-    byChannel[src].orders++
+    if (!byChannel[src]) byChannel[src] = { revenue: 0, refunds: 0 }
+    byChannel[src].revenue += o.total ?? 0
   }
   for (const r of refunds ?? []) {
     const src = sourceMap[r.customer_id] ?? 'direct'
-    if (!byChannel[src]) byChannel[src] = { revenue: 0, refunds: 0, orders: 0 }
+    if (!byChannel[src]) byChannel[src] = { revenue: 0, refunds: 0 }
     byChannel[src].refunds += r.amount ?? 0
   }
 
@@ -436,19 +436,17 @@ export async function getRefundsByChannel(): Promise<{ origin_source: string; re
 
 export async function getCommissionVsRevenuByTier(): Promise<{ tier: string; commission: number; revenue: number }[]> {
   const db = createServerClient()
-  const { data: bas } = await db
-    .from('customers')
-    .select('id, ba_tier, ba_total_commission')
-    .eq('is_ba', true)
+  const [{ data: bas }, { data: chains }, { data: allCustomers }] = await Promise.all([
+    db.from('customers').select('id, ba_tier, ba_total_commission').eq('is_ba', true),
+    db.from('referral_chains').select('origin_ba_id, customer_id'),
+    db.from('customers').select('id, net_ltv'),
+  ])
 
-  const { data: chains } = await db
-    .from('referral_chains')
-    .select('origin_ba_id, net_ltv')
-
+  const ltvMap = new Map((allCustomers ?? []).map(c => [c.id, c.net_ltv ?? 0]))
   const revenueByBA: Record<string, number> = {}
   for (const c of chains ?? []) {
     if (!c.origin_ba_id) continue
-    revenueByBA[c.origin_ba_id] = (revenueByBA[c.origin_ba_id] ?? 0) + (c.net_ltv ?? 0)
+    revenueByBA[c.origin_ba_id] = (revenueByBA[c.origin_ba_id] ?? 0) + (ltvMap.get(c.customer_id) ?? 0)
   }
 
   const byTier: Record<string, { commission: number; revenue: number }> = {}

@@ -65,8 +65,8 @@ export default async function CustomerDetailPage({ params }: Props) {
                 {customer.subscription_status && (
                   <Badge variant={customer.subscription_status}>{customer.subscription_status}</Badge>
                 )}
-                {customer.churn_risk && (
-                  <Badge variant={customer.churn_risk}>Churn: {customer.churn_risk}</Badge>
+                {customer.klaviyo_churn_risk && (
+                  <Badge variant={customer.klaviyo_churn_risk}>Churn: {customer.klaviyo_churn_risk}</Badge>
                 )}
               </div>
               <div className="flex flex-wrap gap-4 text-sm text-[#6B6B6B]">
@@ -83,7 +83,7 @@ export default async function CustomerDetailPage({ params }: Props) {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <StatCard label="Total Orders" value={formatNumber(customer.total_orders)} />
         <StatCard label="LTV" value={formatCurrency(customer.net_ltv)} accent />
-        <StatCard label="Predicted CLV" value={customer.predicted_clv ? formatCurrency(customer.predicted_clv) : '—'} />
+        <StatCard label="Predicted CLV" value={customer.klaviyo_predicted_clv ? formatCurrency(customer.klaviyo_predicted_clv) : '—'} />
         <StatCard label="Referrals Generated" value={formatNumber(downstream.length)} />
       </div>
 
@@ -138,11 +138,11 @@ export default async function CustomerDetailPage({ params }: Props) {
           </div>
           <div className="mt-4 pt-4 border-t border-[#E5E0D8] flex gap-6">
             <div className="flex items-center gap-2 text-sm">
-              {customer.email_consent ? <CheckCircle2 size={16} className="text-[#4A7C59]" /> : <XCircle size={16} className="text-[#C0392B]" />}
+              {customer.klaviyo_email_consent ? <CheckCircle2 size={16} className="text-[#4A7C59]" /> : <XCircle size={16} className="text-[#C0392B]" />}
               Email consent
             </div>
             <div className="flex items-center gap-2 text-sm">
-              {customer.sms_consent ? <CheckCircle2 size={16} className="text-[#4A7C59]" /> : <XCircle size={16} className="text-[#C0392B]" />}
+              {customer.klaviyo_sms_consent ? <CheckCircle2 size={16} className="text-[#4A7C59]" /> : <XCircle size={16} className="text-[#C0392B]" />}
               SMS consent
             </div>
           </div>
@@ -169,9 +169,9 @@ export default async function CustomerDetailPage({ params }: Props) {
                 <tr key={o.id} className="hover:bg-[#F9F6F1] transition-colors">
                   <td className="px-5 py-3 font-mono text-xs text-[#6B6B6B]">{o.order_number}</td>
                   <td className="px-5 py-3 text-[#6B6B6B]">{formatDate(o.created_at)}</td>
-                  <td className="px-5 py-3 font-semibold">{formatCurrency(o.total_price)}</td>
-                  <td className="px-5 py-3 text-xs text-[#6B6B6B] font-mono">{o.discount_codes ?? '—'}</td>
-                  <td className="px-5 py-3"><Badge variant={o.status?.toLowerCase()}>{o.status ?? 'unknown'}</Badge></td>
+                  <td className="px-5 py-3 font-semibold">{formatCurrency(o.total)}</td>
+                  <td className="px-5 py-3 text-xs text-[#6B6B6B] font-mono">{o.discount_code ?? '—'}</td>
+                  <td className="px-5 py-3"><Badge variant={o.fulfillment_status?.toLowerCase()}>{o.fulfillment_status ?? o.financial_status ?? 'unknown'}</Badge></td>
                 </tr>
               ))}
             </tbody>

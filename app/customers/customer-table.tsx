@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card'
 import { formatCurrency, formatDate, formatNumber, CHANNEL_LABELS } from '@/lib/utils'
 import { ChevronUp, ChevronDown, ChevronsUpDown, Search, CheckCircle2, XCircle } from 'lucide-react'
 
-type SortKey = 'first_name' | 'origin_source' | 'total_orders' | 'net_ltv' | 'predicted_clv' | 'first_purchase_date' | 'churn_risk' | 'subscription_status'
+type SortKey = 'first_name' | 'origin_source' | 'total_orders' | 'net_ltv' | 'klaviyo_predicted_clv' | 'first_purchase_date' | 'klaviyo_churn_risk' | 'subscription_status'
 
 const COLS: { key: SortKey; label: string; numeric?: boolean }[] = [
   { key: 'first_name', label: 'Name' },
@@ -15,21 +15,16 @@ const COLS: { key: SortKey; label: string; numeric?: boolean }[] = [
   { key: 'total_orders', label: 'Orders', numeric: true },
   { key: 'net_ltv', label: 'LTV', numeric: true },
   { key: 'subscription_status', label: 'Subscription' },
-  { key: 'churn_risk', label: 'Churn Risk' },
-  { key: 'predicted_clv', label: 'Predicted CLV', numeric: true },
+  { key: 'klaviyo_churn_risk', label: 'Churn Risk' },
+  { key: 'klaviyo_predicted_clv', label: 'Predicted CLV', numeric: true },
   { key: 'first_purchase_date', label: 'First Purchase' },
 ]
 
 const CHURN_RISK_ORDER: Record<string, number> = { low: 0, medium: 1, high: 2 }
 
 const CHANNEL_ICONS: Record<string, string> = {
-  instagram: '📸',
-  tiktok: '🎵',
-  google: '🔍',
-  organic_search: '🌿',
-  ba_referral: '⭐',
-  customer_referral: '👥',
-  direct: '🔗',
+  instagram: '📸', tiktok: '🎵', google: '🔍', organic_search: '🌿',
+  ba_referral: '⭐', customer_referral: '👥', direct: '🔗',
 }
 
 function SortIcon({ col, sort }: { col: SortKey; sort: { key: SortKey; dir: 'asc' | 'desc' } | null }) {
@@ -58,13 +53,13 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
     }
     if (sourceFilter !== 'All') rows = rows.filter(c => (c.origin_source ?? 'direct') === sourceFilter)
     if (subFilter !== 'All') rows = rows.filter(c => c.subscription_status === subFilter)
-    if (churnFilter !== 'All') rows = rows.filter(c => c.churn_risk === churnFilter)
+    if (churnFilter !== 'All') rows = rows.filter(c => c.klaviyo_churn_risk === churnFilter)
     if (isBAFilter) rows = rows.filter(c => c.is_ba)
     if (sort) {
       rows = [...rows].sort((a, b) => {
         let av: string | number = (a[sort.key] as string | number) ?? ''
         let bv: string | number = (b[sort.key] as string | number) ?? ''
-        if (sort.key === 'churn_risk') {
+        if (sort.key === 'klaviyo_churn_risk') {
           av = CHURN_RISK_ORDER[av as string] ?? 0
           bv = CHURN_RISK_ORDER[bv as string] ?? 0
         }
@@ -105,7 +100,7 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
             <span className="text-xs text-[#6B6B6B]">Subscription:</span>
             <select value={subFilter} onChange={e => setSubFilter(e.target.value)}
               className="text-xs border border-[#E5E0D8] rounded px-2 py-1 bg-white text-[#1C1C1C] focus:outline-none focus:ring-1 focus:ring-[#B87333]">
-              {['All', 'active', 'paused', 'cancelled', 'none'].map(s => <option key={s}>{s === 'All' ? 'All' : s}</option>)}
+              {['All', 'active', 'paused', 'cancelled', 'none'].map(s => <option key={s}>{s}</option>)}
             </select>
           </div>
           <div className="flex items-center gap-1">
@@ -166,16 +161,16 @@ export function CustomerTable({ data }: { data: (Customer & { referred_by_name?:
                   {c.subscription_status ? <Badge variant={c.subscription_status}>{c.subscription_status}</Badge> : <span className="text-[#6B6B6B] text-xs">—</span>}
                 </td>
                 <td className="px-4 py-3">
-                  {c.churn_risk ? <Badge variant={c.churn_risk}>{c.churn_risk}</Badge> : <span className="text-[#6B6B6B] text-xs">—</span>}
+                  {c.klaviyo_churn_risk ? <Badge variant={c.klaviyo_churn_risk}>{c.klaviyo_churn_risk}</Badge> : <span className="text-[#6B6B6B] text-xs">—</span>}
                 </td>
-                <td className="px-4 py-3 tabular-nums text-right">{c.predicted_clv ? formatCurrency(c.predicted_clv) : '—'}</td>
+                <td className="px-4 py-3 tabular-nums text-right">{c.klaviyo_predicted_clv ? formatCurrency(c.klaviyo_predicted_clv) : '—'}</td>
                 <td className="px-4 py-3 text-[#6B6B6B] text-xs">{formatDate(c.first_purchase_date)}</td>
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
-                    {c.email_consent
+                    {c.klaviyo_email_consent
                       ? <CheckCircle2 size={14} className="text-[#4A7C59]" />
                       : <XCircle size={14} className="text-[#C0392B]" />}
-                    {c.sms_consent
+                    {c.klaviyo_sms_consent
                       ? <CheckCircle2 size={14} className="text-[#4A7C59]" />
                       : <XCircle size={14} className="text-[#C0392B]" />}
                   </div>

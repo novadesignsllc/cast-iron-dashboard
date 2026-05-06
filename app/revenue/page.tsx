@@ -107,7 +107,7 @@ async function TopOrdersSection() {
                 <td className="px-5 py-3 font-mono text-xs text-[#6B6B6B]">{o.order_number}</td>
                 <td className="px-5 py-3 font-medium">{o.customer_name}</td>
                 <td className="px-5 py-3 text-[#6B6B6B]">{new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-                <td className="px-5 py-3 font-bold text-[#B87333]">{formatCurrency(o.total_price)}</td>
+                <td className="px-5 py-3 font-bold text-[#B87333]">{formatCurrency(o.total)}</td>
               </tr>
             ))}
           </tbody>
