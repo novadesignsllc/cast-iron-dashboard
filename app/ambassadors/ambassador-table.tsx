@@ -27,7 +27,7 @@ const COLS: { key: SortKey; label: string; numeric?: boolean }[] = [
   { key: 'avg_referral_ltv', label: 'Avg Ref LTV', numeric: true },
 ]
 
-const TIERS = ['All', 'Founder', 'Growth', 'Standard']
+// Tiers populated dynamically from data in the component
 
 function SortIcon({ col, sort }: { col: SortKey; sort: { key: SortKey; dir: 'asc' | 'desc' } | null }) {
   if (!sort || sort.key !== col) return <ChevronsUpDown size={12} className="text-[#444444]" />
@@ -42,6 +42,11 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
   })
   const [tierFilter, setTierFilter] = useState('All')
 
+  const tiers = useMemo(() => {
+    const vals = Array.from(new Set(data.map(b => b.ba_tier).filter(Boolean))) as string[]
+    return ['All', ...vals.sort()]
+  }, [data])
+
   const toggleSort = (key: SortKey) => {
     setSort(prev => prev?.key === key
       ? { key, dir: prev.dir === 'desc' ? 'asc' : 'desc' }
@@ -53,9 +58,14 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
     let rows = tierFilter === 'All' ? data : data.filter(b => b.ba_tier === tierFilter)
     if (sort) {
       rows = [...rows].sort((a, b) => {
-        const av = a[sort.key] ?? ''
-        const bv = b[sort.key] ?? ''
-        const cmp = av < bv ? -1 : av > bv ? 1 : 0
+        const av = a[sort.key]
+        const bv = b[sort.key]
+        const na = Number(av)
+        const nb = Number(bv)
+        const cmp = !isNaN(na) && !isNaN(nb)
+          ? na - nb
+          : String(av ?? '').toLowerCase() < String(bv ?? '').toLowerCase() ? -1
+          : String(av ?? '').toLowerCase() > String(bv ?? '').toLowerCase() ? 1 : 0
         return sort.dir === 'asc' ? cmp : -cmp
       })
     }
@@ -67,7 +77,7 @@ export function AmbassadorTable({ data }: { data: BaWithNetwork[] }) {
       {/* Filters */}
       <div className="px-6 py-4 border-b border-[#232323] flex items-center gap-2">
         <span className="text-xs text-[#888580] mr-2">Tier:</span>
-        {TIERS.map(t => (
+        {tiers.map(t => (
           <button
             key={t}
             onClick={() => setTierFilter(t)}
