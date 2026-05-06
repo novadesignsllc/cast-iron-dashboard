@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #F9F6F1;
+  --color-primary: #1C1C1C;
+  --color-accent: #B87333;
+  --color-muted: #6B6B6B;
+  --color-border: #E5E0D8;
+  --color-success: #4A7C59;
+  --color-error: #C0392B;
+  --color-warning: #D4821A;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F4F0EA;
+
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+
+  --radius-card: 0.75rem;
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+  --shadow-card-hover: 0 4px 12px 0 rgb(0 0 0 / 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  border-color: var(--color-border);
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C8C0B4;
+}
+
+/* Table hover */
+.table-row-hover:hover {
+  background-color: var(--color-surface-hover);
+  cursor: pointer;
+}
+
+/* Skeleton animation */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.skeleton {
+  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background-color: var(--color-border);
+  border-radius: 4px;
+}
+
+/* Tree connector lines */
+.tree-connector::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  width: 12px;
+  height: 1px;
+  background-color: var(--color-border);
+}
+.tree-connector-vertical::after {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: -8px;
+  width: 1px;
+  height: calc(50% + 8px);
+  background-color: var(--color-border);
+}

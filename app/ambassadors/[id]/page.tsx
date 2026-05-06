@@ -1,0 +1,195 @@
+// READ ONLY — no writes permitted
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import {
+  getBAById, getBACommissions, getReferralTree,
+  getBADirectReferrals, getBANetworkStats
+} from '@/lib/queries'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { StatCard } from '@/components/stat-card'
+import { ReferralTree } from './referral-tree'
+import {
+  formatCurrency, formatDate, formatNumber, formatRatio, STATUS_COLORS
+} from '@/lib/utils'
+import { ArrowLeft, Mail, Phone, Calendar } from 'lucide-react'
+
+export const dynamic = 'force-dynamic'
+
+interface Props {
+  params: Promise<{ id: string }>
+}
+
+export default async function BADetailPage({ params }: Props) {
+  const { id } = await params
+  const [ba, commissions, treeNodes, directReferrals, netStats] = await Promise.all([
+    getBAById(id),
+    getBACommissions(id),
+    getReferralTree(id),
+    getBADirectReferrals(id),
+    getBANetworkStats(id),
+  ])
+
+  if (!ba || !ba.is_ba) notFound()
+
+  const pendingCommission = ba.ba_commission_pending ?? 0
+  const paidCommission = ba.ba_commission_paid ?? 0
+  const totalCommission = ba.ba_total_commission ?? 0
+
+  return (
+    <div className="p-8 space-y-6 max-w-[1400px]">
+      {/* Back */}
+      <Link href="/ambassadors" className="inline-flex items-center gap-2 text-sm text-[#6B6B6B] hover:text-[#B87333] transition-colors">
+        <ArrowLeft size={16} />
+        Back to Leaderboard
+      </Link>
+
+      {/* Header Card */}
+      <Card>
+        <CardContent className="py-6">
+          <div className="flex items-start gap-6">
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold text-white flex-shrink-0"
+              style={{ background: '#B87333' }}
+            >
+              {ba.first_name[0]}{ba.last_name[0]}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-3 flex-wrap mb-2">
+                <h1 className="text-2xl font-bold text-[#1C1C1C]" style={{ fontFamily: 'Playfair Display, serif' }}>
+                  {ba.first_name} {ba.last_name}
+                </h1>
+                <Badge variant={ba.ba_tier}>{ba.ba_tier ?? 'Standard'}</Badge>
+                <Badge variant={ba.ba_status}>{ba.ba_status ?? 'unknown'}</Badge>
+              </div>
+              <div className="flex flex-wrap gap-4 text-sm text-[#6B6B6B]">
+                {ba.email && (
+                  <span className="flex items-center gap-1.5">
+                    <Mail size={14} />
+                    {ba.email}
+                  </span>
+                )}
+                {ba.phone && (
+                  <span className="flex items-center gap-1.5">
+                    <Phone size={14} />
+                    {ba.phone}
+                  </span>
+                )}
+                <span className="flex items-center gap-1.5">
+                  <Calendar size={14} />
+                  Joined {formatDate(ba.created_at)}
+                </span>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-[#6B6B6B] uppercase tracking-wide mb-1">True Network CAC</p>
+              <p className="text-3xl font-bold" style={{ color: '#B87333', fontFamily: 'Playfair Display, serif' }}>
+                {formatCurrency(netStats.true_network_cac)}
+              </p>
+              <p className="text-xs text-[#6B6B6B]">per network customer</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Stats Row */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <StatCard label="Their LTV" value={formatCurrency(ba.net_ltv)} />
+        <StatCard label="Direct Referrals" value={formatNumber(ba.ba_referral_count ?? 0)} />
+        <StatCard label="Network Size" value={formatNumber(netStats.network_size)} />
+        <StatCard label="Network Revenue" value={formatCurrency(netStats.network_revenue)} accent />
+        <StatCard label="Network ROI" value={formatRatio(netStats.network_roi)} accent={netStats.network_roi >= 3} />
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        <StatCard label="Total Orders" value={formatNumber(ba.total_orders)} />
+        <StatCard label="Total Commission" value={formatCurrency(totalCommission)} />
+        <StatCard label="Commission Paid" value={formatCurrency(paidCommission)} />
+        <StatCard label="Pending Commission" value={formatCurrency(pendingCommission)} />
+      </div>
+
+      {/* Referral Tree — hero section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Referral Network Tree</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ReferralTree baId={id} nodes={treeNodes} />
+        </CardContent>
+      </Card>
+
+      {/* Commission History */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Commission History</CardTitle>
+        </CardHeader>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-[#E5E0D8] bg-[#F9F6F1]">
+                {['Date', 'Customer', 'Order #', 'Amount', 'Attribution', 'Status'].map(h => (
+                  <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E5E0D8]">
+              {commissions.length === 0 && (
+                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#6B6B6B]">No commission history</td></tr>
+              )}
+              {commissions.map(c => (
+                <tr key={c.id} className="hover:bg-[#F9F6F1] transition-colors">
+                  <td className="px-5 py-3 text-[#6B6B6B]">{formatDate(c.created_at)}</td>
+                  <td className="px-5 py-3 font-medium">{c.referred_customer_name}</td>
+                  <td className="px-5 py-3 font-mono text-xs text-[#6B6B6B]">{c.order_number ?? '—'}</td>
+                  <td className="px-5 py-3 font-semibold">{formatCurrency(c.amount)}</td>
+                  <td className="px-5 py-3 text-xs text-[#6B6B6B]">{c.attribution_method}</td>
+                  <td className="px-5 py-3"><Badge variant={c.status}>{c.status}</Badge></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* Direct Referrals Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Direct Referrals ({directReferrals.length})</CardTitle>
+        </CardHeader>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-[#E5E0D8] bg-[#F9F6F1]">
+                {['Name', 'First Order', 'Orders', 'LTV', 'Subscription', 'Their Referrals'].map(h => (
+                  <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-[#6B6B6B] uppercase tracking-wide">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E5E0D8]">
+              {directReferrals.length === 0 && (
+                <tr><td colSpan={6} className="px-5 py-8 text-center text-[#6B6B6B]">No direct referrals yet</td></tr>
+              )}
+              {directReferrals.map(c => (
+                <tr key={c.id} className="hover:bg-[#F9F6F1] transition-colors">
+                  <td className="px-5 py-3">
+                    <Link href={`/customers/${c.id}`} className="font-medium text-[#1C1C1C] hover:text-[#B87333] transition-colors">
+                      {c.first_name} {c.last_name}
+                    </Link>
+                  </td>
+                  <td className="px-5 py-3 text-[#6B6B6B]">{formatDate(c.first_purchase_date)}</td>
+                  <td className="px-5 py-3 tabular-nums">{c.total_orders}</td>
+                  <td className="px-5 py-3 font-semibold tabular-nums">{formatCurrency(c.net_ltv)}</td>
+                  <td className="px-5 py-3">
+                    {c.subscription_status ? (
+                      <Badge variant={c.subscription_status}>{c.subscription_status}</Badge>
+                    ) : '—'}
+                  </td>
+                  <td className="px-5 py-3 tabular-nums">{c.ba_referral_count ?? 0}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  )
+}
